@@ -40,8 +40,8 @@ function AppContent() {
   return (
     <>
       <NavBar />
-      <main key={location.pathname} style={{paddingTop: '72px'}}>
-        <Routes>
+      <main style={{paddingTop: '72px'}}>
+        <Routes key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/diseases" element={<Diseases />} />
