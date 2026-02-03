@@ -22,7 +22,7 @@ const healthRouter = require('./routes/health');
 const apiRouter = require('./routes/api');
 
 // Lightweight logger for API requests to help debug 404s (no secrets)
-app.use('/', (req, res, next) => {
+app.use('/api', (req, res, next) => {
   try {
     console.log(`[API] ${new Date().toISOString()} ${req.method} ${req.originalUrl}`);
   } catch (e) {
@@ -31,11 +31,11 @@ app.use('/', (req, res, next) => {
   next();
 });
 
-app.use('/', healthRouter);
-app.use('/', apiRouter);
+app.use('/api', healthRouter);
+app.use('/api', apiRouter);
 
 // Diagnostic endpoint: list mounted API routes (helps debug 404s)
-app.get('/_routes', (req, res) => {
+app.get('/api/_routes', (req, res) => {
   try {
     const routes = [];
     if (app && app._router && Array.isArray(app._router.stack)) {
