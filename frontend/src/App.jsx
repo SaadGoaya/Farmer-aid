@@ -38,7 +38,7 @@ export default function App() {
     <>
       <NavBar />
       <main style={{paddingTop: '72px'}}>
-        <Routes>
+        <Routes key={location.pathname}>
           <Route path="/" element={<Home />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/diseases" element={<Diseases />} />
