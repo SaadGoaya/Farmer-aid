@@ -3,7 +3,8 @@ import { defineConfig } from 'vite';
 // Vite dev server proxy to avoid CORS while developing
 export default defineConfig({
   build: {
-    outDir: '../dist'
+    outDir: '../dist',
+    emptyOutDir: true
   },
   server: {
     port: 5173,
