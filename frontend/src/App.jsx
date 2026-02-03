@@ -5,7 +5,7 @@ import Home from './pages/Home'
 import Weather from './pages/Weather'
 import Diseases from './pages/Diseases'
 import About from './pages/About'
-import AI from './pages/AI'
+import AIChat from './pages/AI'
 
 function NavBar() {
   return (
@@ -41,7 +41,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/diseases" element={<Diseases />} />
-          <Route path="/ai" element={<AI />} />
+          <Route path="/ai" element={<AIChat />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
