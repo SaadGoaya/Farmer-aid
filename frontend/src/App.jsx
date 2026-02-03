@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import api from './services/api'
-import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { HashRouter, Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/Home'
 import Weather from './pages/Weather'
 import Diseases from './pages/Diseases'
@@ -35,18 +35,9 @@ function NavBar() {
 export default function App() {
   return (
     <HashRouter>
-      <AppContent />
-    </HashRouter>
-  )
-}
-
-function AppContent() {
-  const location = useLocation()
-  return (
-    <>
       <NavBar />
       <main style={{paddingTop: '72px'}}>
-        <Routes key={location.pathname}>
+        <Routes>
           <Route path="/" element={<Home />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/diseases" element={<Diseases />} />
@@ -54,6 +45,6 @@ function AppContent() {
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
-    </>
+    </HashRouter>
   )
 }
