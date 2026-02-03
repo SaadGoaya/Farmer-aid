@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import api from './services/api'
-import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
+import { HashRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Weather from './pages/Weather'
 import Diseases from './pages/Diseases'
@@ -34,9 +34,9 @@ function NavBar() {
 
 export default function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
       <AppContent />
-    </BrowserRouter>
+    </HashRouter>
   )
 }
 
