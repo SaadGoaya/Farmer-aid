@@ -1,0 +1,6 @@
+# robots.txt for Farmer Aid
+# Allow all user agents to crawl the site. Adjust if you need to block staging paths.
+User-agent: *
+Allow: /
+
+Sitemap: https://your-domain.com/sitemap.xml

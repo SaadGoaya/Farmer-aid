@@ -1,0 +1,903 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Plant Doctor AI - Diagnose & Cure Your Plants</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="css/style.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+         :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #8BC34A;
+            --text-color: #333;
+            --light-bg: #f5f5f5;
+            --dark-bg: #2c3e50;
+            --card-bg: #ffffff;
+            --border-radius: 8px;
+            --shadow: rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 72px 0 0 0;
+            /* Adjusted for fixed navbar */
+            background-color: var(--light-bg);
+            color: var(--text-color);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+        /* --- START: Navbar Styles (Green Logo/Links) --- */
+        
+        .logo-emoji {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            /* Logo text color set to green */
+            color: var(--primary-color);
+        }
+        
+        .navbar-brand .spark-part {
+            /* The second half of the logo text also set to green */
+            color: var(--primary-color);
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            color: #555 !important;
+            transition: color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            /* Nav link hover/active color set to green */
+            color: var(--primary-color) !important;
+        }
+        /* --- END: Navbar Styles --- */
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        /* Hero Section */
+        
+        .hero {
+            background: linear-gradient(135deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+            color: #fff;
+            padding: 80px 0;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50px;
+            left: -50px;
+            width: 200px;
+            height: 200px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-bubble 10s infinite ease-in-out alternate;
+            z-index: 1;
+        }
+        
+        .hero::after {
+            content: '';
+            position: absolute;
+            bottom: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            animation: float-bubble 12s infinite ease-in-out alternate-reverse;
+            z-index: 1;
+        }
+        
+        @keyframes float-bubble {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.8;
+            }
+            50% {
+                transform: translateY(-20px) scale(1.05);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(0) scale(1);
+                opacity: 0.8;
+            }
+        }
+        
+        .hero h1 {
+            font-size: 3.5em;
+            margin-bottom: 20px;
+            font-weight: 700;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero p {
+            font-size: 1.3em;
+            margin-bottom: 40px;
+            position: relative;
+            z-index: 2;
+        }
+        /* features section */
+        
+        .features {
+            padding: 60px 0;
+            background-color: var(--light-bg);
+            text-align: center;
+        }
+        
+        .features h2 {
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            color: var(--dark-bg);
+            position: relative;
+        }
+        
+        .features h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+        }
+        
+        .feature-card {
+            /* Kept for specific overrides not in style.css */
+            background-color: var(--card-bg);
+            padding: 30px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px var(--shadow);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            text-align: left;
+        }
+        
+        .feature-card .icon {
+            font-size: 3em;
+            color: var(--primary-color);
+            margin-bottom: 15px;
+        }
+        
+        .feature-card h3 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+            color: var(--dark-bg);
+        }
+        /* Upload Section */
+        
+        .upload-section {
+            padding: 60px 0;
+            background-color: var(--dark-bg);
+            color: #fff;
+            text-align: center;
+        }
+        
+        .upload-section h2 {
+            color: #fff;
+            font-size: 2.5em;
+            margin-bottom: 50px;
+            position: relative;
+        }
+        
+        .upload-section h2::after {
+            content: '';
+            display: block;
+            width: 60px;
+            height: 4px;
+            background-color: var(--primary-color);
+            margin: 15px auto 0;
+            border-radius: 2px;
+        }
+        
+        .upload-area {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            max-width: 700px;
+            margin: 0 auto;
+            animation: slide-up 0.8s ease-out;
+        }
+        
+        @keyframes slide-up {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .drop-zone {
+            border: 3px dashed var(--primary-color);
+            border-radius: var(--border-radius);
+            padding: 40px;
+            cursor: pointer;
+            transition: background-color 0.3s ease, border-color 0.3s ease;
+            margin-bottom: 30px;
+        }
+        
+        .drop-zone:hover {
+            background-color: #e8f5e9;
+            border-color: var(--secondary-color);
+        }
+        
+        .drop-zone p {
+            margin: 0;
+            font-size: 1.2em;
+            color: #666;
+        }
+        
+        .drop-zone input[type="file"] {
+            display: none;
+        }
+        
+        .upload-button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 300px;
+        }
+        
+        .upload-button:hover {
+            background-color: var(--secondary-color);
+            transform: translateY(-3px);
+        }
+        
+        .image-preview {
+            margin-top: 20px;
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            display: none;
+            /* Hidden by default */
+        }
+        
+        .results-area {
+            margin-top: 40px;
+            text-align: left;
+            padding: 30px;
+            background-color: #e0f2f1;
+            /* Light teal background */
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 10px var(--shadow);
+            animation: fade-in 0.8s ease-out;
+            display: none;
+            /* Hidden by default */
+        }
+        
+        @keyframes fade-in {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+        
+        .results-area h3 {
+            color: var(--dark-bg);
+            font-size: 1.8em;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--primary-color);
+            padding-bottom: 10px;
+        }
+        
+        .results-area p {
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #555;
+        }
+        
+        .results-area strong {
+            color: var(--dark-bg);
+        }
+        /* AI Chatbot */
+        
+        .chatbot-toggle {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 1.8em;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            z-index: 1001;
+            transition: transform 0.3s ease, background-color 0.3s ease;
+        }
+        
+        .chatbot-toggle:hover {
+            transform: translateY(-3px);
+            background-color: var(--secondary-color);
+        }
+        
+        .chatbot-window {
+            position: fixed;
+            bottom: 100px;
+            right: 30px;
+            width: 350px;
+            height: 450px;
+            background-color: var(--card-bg);
+            border-radius: var(--border-radius);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            z-index: 1002;
+            transform: scale(0.8);
+            opacity: 0;
+            pointer-events: none;
+            transition: transform 0.3s ease, opacity 0.3s ease;
+        }
+        
+        .chatbot-window.open {
+            transform: scale(1);
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .chatbot-header {
+            background-color: var(--primary-color);
+            color: #fff;
+            padding: 15px;
+            font-size: 1.2em;
+            font-weight: 600;
+            border-top-left-radius: var(--border-radius);
+            border-top-right-radius: var(--border-radius);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .chatbot-header span {
+            cursor: pointer;
+            font-size: 1.5em;
+        }
+        
+        .chatbot-messages {
+            flex-grow: 1;
+            padding: 15px;
+            overflow-y: auto;
+            background-color: var(--light-bg);
+        }
+        
+        .chatbot-message {
+            margin-bottom: 10px;
+            padding: 10px 15px;
+            border-radius: 15px;
+            max-width: 80%;
+            word-wrap: break-word;
+        }
+        
+        .chatbot-message.user {
+            background-color: var(--primary-color);
+            color: #fff;
+            align-self: flex-end;
+            margin-left: auto;
+            border-bottom-right-radius: 2px;
+        }
+        
+        .chatbot-message.bot {
+            background-color: #e0e0e0;
+            color: var(--text-color);
+            align-self: flex-start;
+            margin-right: auto;
+            border-bottom-left-radius: 2px;
+        }
+        
+        .chatbot-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .chatbot-input input {
+            flex-grow: 1;
+            border: 1px solid #ddd;
+            border-radius: 25px;
+            padding: 10px 15px;
+            font-size: 1em;
+            margin-right: 10px;
+            outline: none;
+        }
+        
+        .chatbot-input button {
+            background-color: var(--primary-color);
+            color: #fff;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            cursor: pointer;
+            font-size: 1.2em;
+            transition: background-color 0.3s ease;
+        }
+        
+        .chatbot-input button:hover {
+            background-color: var(--secondary-color);
+        }
+        /* Responsive Design */
+        
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2.5em;
+            }
+            .hero p {
+                font-size: 1em;
+            }
+            .feature-grid {
+                grid-template-columns: 1fr;
+            }
+            .chatbot-window {
+                width: 90%;
+                right: 5%;
+                bottom: 90px;
+                height: 400px;
+            }
+            .chatbot-toggle {
+                bottom: 20px;
+                right: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <span class="logo-emoji">🌾</span>
+                <span class="brand-text">Farmer<span class="spark-part"> Aid</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="weather.html">Weather</a></li>
+                    <li class="nav-item"><a class="nav-link active" href="diseases.html">Diseases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ai-assistant.html">AI Assistant</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <main>
+        <header class="hero hero-section">
+            <div class="hero-bg" aria-hidden="true">
+                <div class="hero-bg-inner" aria-hidden="true"></div>
+            </div>
+            <div class="hero-overlay"></div>
+            <div class="hero-clouds" aria-hidden="true">
+                <div class="cloud c1"></div>
+                <div class="cloud c2"></div>
+                <div class="cloud c3"></div>
+            </div>
+            <div class="hero-sun" aria-hidden="true"></div>
+            <div class="hero-sheen" aria-hidden="true"></div>
+            <div class="hero-rays" aria-hidden="true"></div>
+            <div class="hero-vignette" aria-hidden="true"></div>
+            <div class="hero-particles" aria-hidden="true"></div>
+            <div class="bubble b1 animate__animated animate__fadeIn" aria-hidden="true"></div>
+            <div class="bubble b2 animate__animated animate__fadeIn animate__delay-1s" aria-hidden="true"></div>
+
+            <div class="hero-content text-white text-center container">
+                <h1 class="animate__animated animate__fadeInDown">Diagnose & Cure Your Plants with Artificial Intelligence</h1>
+                <p class="animate__animated animate__fadeInUp animate__delay-1s">Upload a picture of your plant, and our AI will identify diseases, nutrient deficiencies, or water issues, providing immediate solutions.</p>
+                <a href="#upload" class="btn btn-success btn-lg animate__animated animate__fadeInUp animate__delay-1s">Get Started Now</a>
+            </div>
+
+            <div class="hero-bottom-fade" aria-hidden="true"></div>
+        </header>
+
+        <section id="features" class="features">
+            <div class="container">
+                <h2>Why Choose Plant Doctor AI?</h2>
+                <div class="row g-4 justify-content-center">
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card crop-card feature-card h-100 text-center">
+                            <div class="icon">🌿</div>
+                            <h3>Accurate Disease Detection</h3>
+                            <p>Our advanced AI swiftly identifies a wide range of plant diseases from your uploaded images.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card crop-card feature-card h-100 text-center">
+                            <div class="icon">🔬</div>
+                            <h3>Nutrient & Water Analysis</h3>
+                            <p>Gain vital insights into nutrient deficiencies or watering imbalances affecting your plants.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card crop-card feature-card h-100 text-center">
+                            <div class="icon">👨‍⚕️</div>
+                            <h3>Actionable Cure Recommendations</h3>
+                            <p>Receive clear, step-by-step instructions and best practices to restore your plants' health.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-12 col-md-6 col-lg-3">
+                        <div class="card crop-card feature-card h-100 text-center">
+                            <div class="icon">💬</div>
+                            <h3>AI Chat Support</h3>
+                            <p>Have questions or need more details? Our integrated chatbot offers instant answers and expert guidance.</p>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+        </section>
+
+        <section id="upload" class="upload-section">
+            <div class="container">
+                <h2>Upload Your Plant Image for Diagnosis</h2>
+                <div class="upload-area">
+                    <div class="drop-zone" id="dropZone">
+                        <input type="file" id="plantImageInput" accept="image/*">
+                        <p>Drag & Drop your plant image here, or click to select a file.</p>
+                    </div>
+                    <img id="imagePreview" class="image-preview" src="" alt="Image Preview">
+                    <button class="upload-button" id="diagnoseButton">Diagnose Plant</button>
+
+                    <div id="resultsArea" class="results-area">
+                        <h3>Diagnosis Results:</h3>
+                        <p><strong>Disease Detected:</strong> <span id="diseaseName">Loading...</span></p>
+                        <p><strong>Severity:</strong> <span id="diseaseSeverity">Loading...</span></p>
+                        <p><strong>Recommended Treatment:</strong> <span id="treatment">Loading...</span></p>
+                        <p><strong>Nutrient & Water Status:</strong> <span id="nutrientWater">Loading...</span></p>
+                        <p><strong>Additional Advice:</strong> <span id="additionalAdvice">Loading...</span></p>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <button class="chatbot-toggle" id="chatbotToggle">💬</button>
+
+    <div class="chatbot-window" id="chatbotWindow">
+        <div class="chatbot-header">
+            Plant Doctor AI Chatbot
+            <span id="closeChatbot">&times;</span>
+        </div>
+        <div class="chatbot-messages" id="chatbotMessages">
+            <div class="chatbot-message bot">Hello! How can I help you with your plants today?</div>
+        </div>
+        <div class="chatbot-input">
+            <input type="text" id="chatbotInput" placeholder="Ask a question...">
+            <button id="sendMessage">➤</button>
+        </div>
+    </div>
+
+    <footer class="footer bg-dark text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>© <span id="copyYear"></span> AgriGuide AI — All rights reserved.</div>
+            <div class="small">Built with ❤ for farmers</div>
+        </div>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            // Gemini requests are proxied via server at /api/gemini
+
+            const dropZone = document.getElementById('dropZone');
+            const plantImageInput = document.getElementById('plantImageInput');
+            const imagePreview = document.getElementById('imagePreview');
+            const diagnoseButton = document.getElementById('diagnoseButton');
+            const resultsArea = document.getElementById('resultsArea');
+            const diseaseName = document.getElementById('diseaseName');
+            const diseaseSeverity = document.getElementById('diseaseSeverity');
+            const treatment = document.getElementById('treatment');
+            const nutrientWater = document.getElementById('nutrientWater');
+            const additionalAdvice = document.getElementById('additionalAdvice');
+
+            const chatbotToggle = document.getElementById('chatbotToggle');
+            const chatbotWindow = document.getElementById('chatbotWindow');
+            const closeChatbot = document.getElementById('closeChatbot');
+            const chatbotMessages = document.getElementById('chatbotMessages');
+            const chatbotInput = document.getElementById('chatbotInput');
+            const sendMessageButton = document.getElementById('ge');
+
+            let lastUploadedFile = null;
+
+            // Handle image upload via drop zone or click
+            dropZone.addEventListener('click', () => plantImageInput.click());
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--secondary-color)';
+            });
+            dropZone.addEventListener('dragleave', () => {
+                dropZone.style.borderColor = 'var(--primary-color)';
+            });
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                dropZone.style.borderColor = 'var(--primary-color)';
+                const files = e.dataTransfer.files;
+                if (files.length > 0) {
+                    handleImageUpload(files[0]);
+                }
+            });
+
+            plantImageInput.addEventListener('change', (e) => {
+                if (e.target.files.length > 0) {
+                    handleImageUpload(e.target.files[0]);
+                }
+            });
+
+            function handleImageUpload(file) {
+                lastUploadedFile = file;
+                if (file.type && file.type.startsWith('image/')) {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        imagePreview.src = e.target.result;
+                        imagePreview.style.display = 'block';
+                        resultsArea.style.display = 'none'; // Hide previous results
+                    };
+                    reader.readAsDataURL(file);
+                } else {
+                    alert('Please upload an image file.');
+                }
+            }
+
+            diagnoseButton.addEventListener('click', () => {
+                if (lastUploadedFile || imagePreview.src) {
+                    runAIDiagnosis(lastUploadedFile || imagePreview.src);
+                } else {
+                    alert('Please upload a plant image first.');
+                }
+            });
+
+            async function runAIDiagnosis(imageFileOrData) {
+                // Show loading text first (leave styling intact)
+                resultsArea.style.display = 'block';
+                diseaseName.textContent = 'Analyzing...';
+                diseaseSeverity.textContent = 'Analyzing...';
+                treatment.textContent = 'Analyzing...';
+                nutrientWater.textContent = 'Analyzing...';
+                additionalAdvice.textContent = 'Analyzing...';
+
+                try {
+                    // Convert file to data URL if it's a File object
+                    let dataUrl;
+                    if (imageFileOrData instanceof File) {
+                        dataUrl = await fileToDataURL(imageFileOrData);
+                    } else if (typeof imageFileOrData === 'string') {
+                        dataUrl = imageFileOrData; // already data URL
+                    } else {
+                        throw new Error('Invalid image data');
+                    }
+
+                    // Create a robust prompt asking the AI to return JSON
+                    const prompt = `
+You are an expert agricultural plant pathologist. You will be given an image (base64 data URL) of a plant leaf or plant part.
+Analyze the image and try to identify the most likely disease OR nutritional/water deficiency. Respond ONLY with a single JSON object (no additional commentary) using these keys exactly:
+{
+  "disease": "<Name or 'unknown' or multiple comma-separated hypotheses>",
+  "severity": "<mild | moderate | severe | unknown>",
+  "treatment": "<Concise, actionable treatment steps>",
+  "nutrientWater": "<Concise advice about nutrient or water issues (if any)>",
+  "additionalAdvice": "<Any additional practical advice for the farmer>"
+}
+
+If you are not certain, set "disease" to "unknown" and give likely possibilities in that field. Use short sentences and avoid mentioning brand names or chemical dosages. Here is the image in base64 (data URL):\n\n${dataUrl}\n\nEnd of input.
+`;
+
+                    const aiText = await askGemini(prompt);
+
+                    if (!aiText) {
+                        // give helpful message if AI did not respond
+                        treatment.textContent = 'AI service did not return a response. Check API key / console for errors.';
+                        diseaseName.textContent = 'Error';
+                        diseaseSeverity.textContent = 'Error';
+                        nutrientWater.textContent = '-';
+                        additionalAdvice.textContent = '-';
+                        return;
+                    }
+
+                    // Try to extract JSON from AI output
+                    let extractedJSON = null;
+                    try {
+                        // Find first { ... } block
+                        const match = aiText.match(/\{[\s\S]*\}/);
+                        if (match) {
+                            extractedJSON = JSON.parse(match[0]);
+                        }
+                    } catch (e) {
+                        // parsing failed
+                        extractedJSON = null;
+                    }
+
+                    if (extractedJSON) {
+                        diseaseName.textContent = extractedJSON.disease || 'unknown';
+                        diseaseSeverity.textContent = extractedJSON.severity || 'unknown';
+                        treatment.textContent = extractedJSON.treatment || 'No treatment info provided.';
+                        nutrientWater.textContent = extractedJSON.nutrientWater || '-';
+                        additionalAdvice.textContent = extractedJSON.additionalAdvice || '-';
+                    } else {
+                        // Fallback — put full AI text into treatment so user sees analysis
+                        diseaseName.textContent = 'See AI Analysis Below ↓';
+                        diseaseSeverity.textContent = 'AI Summary:';
+                        treatment.textContent = aiText;
+                        nutrientWater.textContent = 'AI-generated agricultural insight.';
+                        additionalAdvice.textContent = 'Consult a local expert if problem persists.';
+                    }
+
+                    // Scroll to results
+                    resultsArea.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                } catch (err) {
+                    console.error('Diagnosis error:', err);
+                    diseaseName.textContent = 'Error';
+                    diseaseSeverity.textContent = 'Error';
+                    treatment.textContent = `Error: ${err.message}`;
+                    nutrientWater.textContent = '-';
+                    additionalAdvice.textContent = '-';
+                }
+            }
+
+            function fileToDataURL(file) {
+                return new Promise((resolve, reject) => {
+                    const reader = new FileReader();
+                    reader.onload = () => resolve(reader.result);
+                    reader.onerror = reject;
+                    reader.readAsDataURL(file);
+                });
+            }
+
+            // Ask Gemini (text-only request using generation endpoint)
+            async function askGemini(promptText) {
+
+                const systemInstruction = `You are AgriGuide, a concise agricultural expert. Answer exactly as requested.`;
+
+                const requestBody = {
+                    systemInstruction: {
+                        parts: [{ text: systemInstruction }]
+                    },
+                    // send the prompt as a single content part
+                    contents: [{ parts: [{ text: promptText }] }],
+                    generationConfig: {
+                        temperature: 0.2,
+                        maxOutputTokens: 1200
+                    }
+                };
+
+                try {
+                    const resp = await fetch('/api/gemini', {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(requestBody)
+                    });
+
+                    if (!resp.ok) {
+                        let errorText = `API Error ${resp.status}: ${resp.statusText}`;
+                        try {
+                            const errJson = await resp.json();
+                            errorText = errJson?.error?.message || errorText;
+                        } catch (e) { /* ignore JSON parse error */ }
+                        console.error('Gemini API error:', errorText);
+                        return null;
+                    }
+
+                    const data = await resp.json();
+                    const aiText = data?.candidates?.[0]?.content?.parts?.[0]?.text;
+                    return aiText ? aiText.trim() : null;
+                } catch (e) {
+                    console.error('askGemini fetch failed:', e);
+                    return null;
+                }
+            }
+
+            // Chatbot functionality — reuse same askGemini function for chat replies
+            chatbotToggle.addEventListener('click', () => {
+                chatbotWindow.classList.toggle('open');
+            });
+
+            closeChatbot.addEventListener('click', () => {
+                chatbotWindow.classList.remove('open');
+            });
+
+            sendMessageButton.addEventListener('click', () => {
+                sendMessage();
+            });
+
+            chatbotInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') {
+                    sendMessage();
+                }
+            });
+
+            async function sendMessage() {
+                const userMessage = chatbotInput.value.trim();
+                if (userMessage === '') return;
+
+                appendMessage(userMessage, 'user');
+                chatbotInput.value = '';
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                // show typing indicator
+                appendMessage('Typing...', 'bot');
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+
+                // Ask Gemini with an agricultural persona and concise answer request
+                const prompt = `You are an agricultural expert named AgriGuide. Answer concisely and helpfully. Question: ${userMessage}\n\nIf the question is about a diagnosis, ask for an image or suggest steps to collect a close-up photo.`;
+                const aiResponse = await askGemini(prompt) || "Sorry, the AI did not return an answer. Check API key or try again.";
+
+                // replace typing message
+                const typingMessage = Array.from(chatbotMessages.querySelectorAll('.chatbot-message.bot')).pop();
+                if (typingMessage && typingMessage.textContent === 'Typing...') {
+                    typingMessage.textContent = aiResponse;
+                } else {
+                    appendMessage(aiResponse, 'bot');
+                }
+
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+
+            function appendMessage(text, sender) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('chatbot-message', sender);
+                messageDiv.textContent = text;
+                chatbotMessages.appendChild(messageDiv);
+                chatbotMessages.scrollTop = chatbotMessages.scrollHeight;
+            }
+
+            // Set current year for footer
+            const copyYear = document.getElementById('copyYear');
+            if (copyYear) copyYear.textContent = new Date().getFullYear();
+        });
+    </script>
+    <script src="js/script.js"></script>
+</body>
+
+</html>

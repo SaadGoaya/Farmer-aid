@@ -1,0 +1,1108 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>🌾 Farmer Aid — Advanced Weather & Crop Insights</title>
+
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+    <!-- Animate.css (subtle animations) -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
+
+    <!-- Shared site styles (use same hero styles as index.html) -->
+    <link rel="stylesheet" href="css/style.css" />
+
+    <style>
+        /* ---------- CORE THEME ---------- */
+        
+         :root {
+            --primary-color: #4CAF50;
+            --secondary-color: #8BC34A;
+            --accent: #FFC107;
+            --text: #2b2b2b;
+            --muted: #6c757d;
+            --bg: #f5f7f6;
+            --card: #ffffff;
+            --radius: 12px;
+            --shadow: rgba(0, 0, 0, 0.08);
+            --dark-bg: #2c3e50;
+        }
+        
+        html,
+        body {
+            height: 100%;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding-top: 72px;
+            /* for fixed navbar */
+            background: var(--bg);
+            color: var(--text);
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            padding: 0 15px;
+            margin: 0 auto;
+        }
+        /* ---------- NAVBAR (match index.html) ---------- */
+        
+        .navbar {
+            background-color: var(--card) !important;
+            box-shadow: 0 2px 10px var(--shadow);
+        }
+        
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.4rem;
+            color: var(--primary-color) !important;
+        }
+        
+        .navbar-brand .logo-emoji {
+            font-size: 1.6rem;
+            margin-right: 6px;
+        }
+        
+        .navbar-nav .nav-link {
+            color: var(--text) !important;
+            font-weight: 500;
+            margin-right: 12px;
+            transition: color .25s;
+        }
+        
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            color: var(--primary-color) !important;
+        }
+        /* ---------- HERO (styled like index.html hero-section) ---------- */
+        
+        .hero {
+            position: relative;
+            color: #fff;
+            text-align: center;
+            min-height: 72vh;
+            /* match index hero height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1600&q=60');
+            background-size: cover;
+            background-position: center center;
+            overflow: hidden;
+        }
+        /* subtle dark overlay for legibility (keeps same gradient direction used previously) */
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(180deg, rgba(6, 20, 10, 0.45), rgba(10, 40, 20, 0.45));
+            z-index: 0;
+            pointer-events: none;
+        }
+        /* container for hero content (keeps the same DOM but uses index-like spacing) */
+        
+        .hero .hero-inner {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 4rem 1rem;
+            /* match index spacing while keeping content centered */
+        }
+        
+        .hero h1 {
+            font-size: clamp(2rem, 5vw, 3.3rem);
+            margin-bottom: 0.5rem;
+            font-weight: 800;
+            text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+            color: #fff;
+            line-height: 1.02;
+        }
+        
+        .hero p {
+            font-size: 1.05rem;
+            margin-bottom: 1rem;
+            font-weight: 300;
+            color: rgba(255, 255, 255, 0.95);
+            text-shadow: 0 6px 18px rgba(0, 0, 0, 0.25);
+        }
+        /* hero CTAs: slightly smaller radius to match index visuals */
+        
+        .hero .btn {
+            border-radius: 8px;
+            padding: 12px 22px;
+            font-weight: 700;
+        }
+        
+        .hero .btn-outline-light {
+            border: 1px solid rgba(255, 255, 255, 0.14);
+            color: #fff;
+        }
+        /* animated corner bubbles */
+        
+        .hero .bubble {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.12;
+            background: #fff;
+        }
+        
+        .hero .bubble.b1 {
+            width: 220px;
+            height: 220px;
+            top: -40px;
+            left: -60px;
+        }
+        
+        .hero .bubble.b2 {
+            width: 150px;
+            height: 150px;
+            bottom: -40px;
+            right: -40px;
+        }
+        /* ---------- CONTROLS CARD ---------- */
+        
+        .controls-wrap {
+            margin-top: -70px;
+            position: relative;
+            z-index: 3;
+        }
+        
+        .controls {
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 6px 24px var(--shadow);
+            padding: 20px;
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            animation: popIn .6s ease;
+        }
+        
+        @keyframes popIn {
+            from {
+                opacity: 0;
+                transform: translateY(12px);
+            }
+            to {
+                opacity: 1;
+                transform: none;
+            }
+        }
+        
+        .controls .form-control,
+        .controls .form-select {
+            border-radius: 50px;
+            padding: 12px 18px;
+            font-size: 1rem;
+            border: 1px solid #e6e6e6;
+            box-shadow: none;
+        }
+        /* Enhanced controls visuals */
+        
+        .controls {
+            transition: transform .45s cubic-bezier(.2, .9, .2, 1), box-shadow .45s;
+        }
+        
+        .controls:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 18px 40px rgba(11, 22, 33, 0.06);
+        }
+        
+        .controls .form-control:focus,
+        .controls .form-select:focus {
+            outline: none;
+            box-shadow: 0 6px 24px rgba(76, 175, 80, 0.12), 0 0 0 4px rgba(76, 175, 80, 0.06);
+            border-color: rgba(76, 175, 80, 0.65);
+        }
+        /* Custom select wrapper (JS will insert) */
+        
+        .custom-select-wrapper {
+            position: relative;
+            display: inline-block;
+        }
+        
+        .custom-select-button {
+            min-width: 220px;
+            border-radius: 50px;
+            padding: 10px 16px;
+            background: #fff;
+            border: 1px solid #e6e6e6;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 8px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.03);
+            transition: transform .12s ease, box-shadow .12s ease;
+        }
+        
+        .custom-select-button:active {
+            transform: scale(.99);
+        }
+        
+        .custom-select-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            left: 0;
+            right: 0;
+            background: #fff;
+            border-radius: 12px;
+            padding: 8px;
+            box-shadow: 0 18px 40px rgba(10, 20, 30, 0.12);
+            z-index: 1200;
+            display: none;
+            transform-origin: top center;
+            overflow: hidden;
+        }
+        
+        .custom-select-menu.open {
+            display: block;
+            animation: popIn .28s cubic-bezier(.2, .9, .2, 1);
+        }
+        
+        .custom-option {
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background .12s;
+        }
+        
+        .custom-option:hover {
+            background: rgba(76, 175, 80, 0.06);
+        }
+        
+        .custom-option.active {
+            background: rgba(76, 175, 80, 0.10);
+            font-weight: 600;
+        }
+        /* Button ripple */
+        
+        .btn-ripple {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .btn-ripple span.ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            background: rgba(255, 255, 255, 0.5);
+            animation: ripple .6s linear;
+            pointer-events: none;
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(6);
+                opacity: 0;
+            }
+        }
+        /* Location button pulse */
+        
+        .loc-pulse {
+            position: relative;
+        }
+        
+        .loc-pulse::after {
+            content: '';
+            position: absolute;
+            inset: -6px;
+            border-radius: 50%;
+            box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.35);
+            animation: pulse 2s infinite;
+            opacity: 0;
+        }
+        
+        .loc-pulse.active::after {
+            opacity: 1;
+        }
+        
+        @keyframes pulse {
+            0% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.45);
+            }
+            70% {
+                box-shadow: 0 0 0 12px rgba(76, 175, 80, 0);
+            }
+            100% {
+                box-shadow: 0 0 0 0 rgba(76, 175, 80, 0);
+            }
+        }
+        
+        .controls .btn {
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: 600;
+        }
+        
+        .controls .btn-outline-success {
+            color: var(--primary-color);
+            border-color: var(--primary-color);
+        }
+        /* ---------- LOADING ---------- */
+        
+        .loading-spinner {
+            text-align: center;
+            margin: 30px 0;
+            display: none;
+        }
+        
+        .loading-spinner.active {
+            display: block;
+        }
+        /* ---------- RESULTS ---------- */
+        
+        #results {
+            margin-top: 30px;
+            display: grid;
+            gap: 22px;
+        }
+        
+        .card-block {
+            background: var(--card);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+        /* current weather layout */
+        
+        #currentWeather .weather-icon {
+            font-size: 4.2rem;
+            color: var(--accent);
+            margin-bottom: 10px;
+        }
+        
+        #currentWeather h2 {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            color: var(--dark-bg);
+        }
+        
+        .weather-details p {
+            margin: 6px 0;
+            color: var(--muted);
+            font-size: 0.98rem;
+        }
+        /* forecast grid */
+        
+        .forecast-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 14px;
+            margin-top: 12px;
+        }
+        
+        .forecast-card {
+            text-align: center;
+            padding: 14px;
+            border-radius: 10px;
+            background: linear-gradient(180deg, #fff, #fbfffb);
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.04);
+            transition: transform .25s, box-shadow .25s;
+        }
+        
+        .forecast-card:hover {
+            transform: translateY(-6px);
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.06);
+        }
+        
+        .forecast-card .icon {
+            font-size: 2.2rem;
+            color: var(--accent);
+            margin-bottom: 8px;
+        }
+        
+        .forecast-card h5 {
+            margin: 6px 0;
+            color: var(--primary-color);
+        }
+        /* Polished card visuals and realistic sheen/hover */
+        
+        .card-block {
+            transition: transform .38s cubic-bezier(.2, .9, .2, 1), box-shadow .38s cubic-bezier(.2, .9, .2, 1);
+            will-change: transform, box-shadow;
+            transform-origin: center;
+        }
+        
+        .card-block:hover {
+            transform: translateY(-10px) scale(1.01);
+            box-shadow: 0 22px 50px rgba(13, 30, 43, 0.18);
+        }
+        
+        .forecast-card {
+            position: relative;
+            overflow: hidden;
+            border-radius: 12px;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(250, 255, 250, 0.95));
+            transition: transform .35s ease, box-shadow .35s ease;
+            box-shadow: 0 8px 22px rgba(10, 20, 30, 0.06);
+        }
+        
+        .forecast-card::after {
+            content: '';
+            position: absolute;
+            left: -75%;
+            top: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0.06) 0%, rgba(255, 255, 255, 0.14) 50%, rgba(255, 255, 255, 0.06) 100%);
+            transform: rotate(20deg) translateX(-20%);
+            transition: transform .9s ease;
+            pointer-events: none;
+        }
+        
+        .forecast-card:hover::after {
+            transform: rotate(20deg) translateX(20%);
+        }
+        /* Entrance animation helper classes (JS will add 'in') */
+        
+        .card-entrance {
+            transform: translateY(18px) scale(.995);
+            opacity: 0;
+        }
+        
+        .card-entrance.in {
+            transform: translateY(0) scale(1);
+            opacity: 1;
+            transition: transform .6s cubic-bezier(.2, .9, .2, 1), opacity .55s ease;
+        }
+        /* subtle 3D tilt effect when moving pointer over forecast cards */
+        
+        .tilt-enabled {
+            transition: transform .12s ease;
+            transform-style: preserve-3d;
+        }
+        /* Hero CTA styles */
+        
+        .hero-ctas .hero-cta {
+            min-width: 170px;
+            border-radius: 12px;
+            padding: 14px 22px;
+            font-weight: 600;
+            box-shadow: 0 8px 24px rgba(22, 28, 45, .12);
+            position: relative;
+            overflow: hidden
+        }
+        
+        .hero-cta {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: #fff;
+            border: 0
+        }
+        
+        .hero-cta.hero-cta-outline {
+            background: transparent;
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, .14);
+            backdrop-filter: blur(4px)
+        }
+        
+        .hero-cta:before {
+            content: '';
+            position: absolute;
+            left: -60%;
+            top: -30%;
+            width: 40%;
+            height: 120%;
+            background: rgba(255, 255, 255, .18);
+            transform: skewX(-18deg) rotate(-12deg);
+            transition: all .9s ease;
+            opacity: .0
+        }
+        
+        .hero-cta:hover:before {
+            left: 120%;
+            opacity: 1
+        }
+        /* Small entrance for hero buttons */
+        
+        .hero-cta.card-entrance {
+            transform: translateY(10px) scale(.998);
+            opacity: 0
+        }
+        
+        .hero-cta.card-entrance.in {
+            transform: none;
+            opacity: 1;
+            transition: all .48s cubic-bezier(.2, .9, .3, 1)
+        }
+        /* Ripple (used by btn-ripple) */
+        
+        .ripple {
+            position: absolute;
+            border-radius: 50%;
+            transform: scale(0);
+            background: rgba(255, 255, 255, .35);
+            animation: ripple .6s linear
+        }
+        
+        @keyframes ripple {
+            to {
+                transform: scale(6);
+                opacity: 0
+            }
+        }
+        /* advisory (removed) */
+        /* footer */
+        
+        footer.footer {
+            margin-top: 24px;
+            padding: 18px 0;
+            background: var(--dark-bg);
+            color: #fff;
+            text-align: center;
+        }
+        /* small screens */
+        
+        @media (max-width:768px) {
+            .hero h1 {
+                font-size: 2rem;
+            }
+            .controls {
+                flex-direction: column;
+                gap: 8px;
+            }
+            .controls .left,
+            .controls .right {
+                width: 100%;
+            }
+        }
+    </style>
+    <style>
+        /* Threshold / advisory styles (small, unobtrusive badges/alerts) */
+        
+        .alert-risk-low {
+            background: #e6f4ea;
+            color: #145a32;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .alert-risk-moderate {
+            background: #fff4e5;
+            color: #7a4a00;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .alert-risk-high {
+            background: #fdecea;
+            color: #7a1414;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .punjab-alert-moderate {
+            background: #fff3cd;
+            color: #856404;
+            padding: 10px;
+            border-radius: 8px;
+        }
+        
+        .punjab-alert-high {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 10px;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- NAVBAR: structure & classes copied from index.html; 'Weather' link marked active and points to weather.html -->
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="#">
+                <span class="logo-emoji">🌾</span>
+                <span class="brand-text">Farmer Aid</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html"><b>Home</b></a></li>
+                    <li class="nav-item"><a class="nav-link active" href="weather.html"><b>Weather</b></a></li>
+                    <li class="nav-item"><a class="nav-link" href="diseases.html"><b>Diseases</b></a></li>
+                    <!-- AI Assistant link removed -->
+
+                    <li class="nav-item"><a class="nav-link" href="ai-assistant.html"><b>AI Assistant</b></a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html"><b>About</b></a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- HERO: use index-style hero-section for matching background and header styling -->
+    <header class="hero-section" id="home">
+        <!-- Background layer for transform-based parallax (GPU-accelerated) -->
+        <div class="hero-bg" aria-hidden="true">
+            <div class="hero-bg-inner" aria-hidden="true"></div>
+        </div>
+        <div class="hero-overlay"></div>
+        <!-- Decorative animated sky: clouds, sun and sheen -->
+        <div class="hero-clouds" aria-hidden="true">
+            <div class="cloud c1"></div>
+            <div class="cloud c2"></div>
+            <div class="cloud c3"></div>
+        </div>
+        <div class="hero-sun" aria-hidden="true"></div>
+        <div class="hero-sheen" aria-hidden="true"></div>
+        <div class="hero-shimmer" aria-hidden="true"></div>
+        <div class="hero-rays" aria-hidden="true"></div>
+        <div class="hero-vignette" aria-hidden="true"></div>
+        <div class="hero-particles" aria-hidden="true"></div>
+
+        <div class="container hero-content text-white text-center">
+            <h1 class="hero-title">Advanced Weather & Crop Insights</h1>
+            <p class="hero-tagline">Get accurate 5-day forecasts and practical recommendations tailored for your crops in Pakistan. Make informed decisions for healthier crops and higher yields.</p>
+            <div class="hero-ctas mt-4">
+                <button id="heroCheckBtn" class="btn btn-success btn-lg" onclick="document.getElementById('cityInput').focus();">Check Weather</button>
+                <a id="heroForecastBtn" class="btn btn-outline-light btn-lg" href="#forecast">View Forecast</a>
+            </div>
+        </div>
+
+        <!-- Foreground plant (same markup used by index.html/script.js) -->
+        <div class="hero-plant hero-plant-inner" aria-hidden="true">
+            <img src="images/plant-foreground.svg" alt="decorative plant" style="width:100%;height:auto;display:block;" />
+        </div>
+
+        <!-- bottom fade to white -->
+        <div class="hero-bottom-fade"></div>
+    </header>
+
+    <!-- CONTROLS -->
+    <section class="container controls-wrap">
+        <div class="controls">
+            <div class="left d-flex gap-2 align-items-center" style="flex:1; min-width:220px;">
+                <input id="cityInput" class="form-control" placeholder="Enter city (e.g., Lahore, Multan)" />
+                <button id="searchBtn" class="btn btn-success"><i class="fas fa-search"></i></button>
+                <button id="locBtn" class="btn btn-outline-success"><i class="fas fa-map-marker-alt"></i></button>
+            </div>
+
+            <div class="right d-flex gap-2 align-items-center" style="min-width:320px;">
+                <select id="cropSelect" class="form-select" style="min-width:220px;">
+          <option value="Wheat">Wheat (گندم)</option>
+          <option value="Rice">Rice (چاول)</option>
+          <option value="Cotton">Cotton (کپاس)</option>
+          <option value="Sugarcane">Sugarcane (گنا)</option>
+          <option value="Maize">Maize (مکئی)</option>
+          <option value="Barley">Barley (جو)</option>
+          <option value="Pulses">Pulses (دالیں)</option>
+          <option value="Oilseeds">Oilseeds (تیل کے بیج)</option>
+          <option value="Vegetables">Vegetables (سبزیاں)</option>
+          <option value="Fruits">Fruits (پھل)</option>
+        </select>
+                <!-- Zone selector used by weather.js to select threshold zone or auto-detect -->
+                <select id="zoneSelect" class="form-select" title="Select province/zone or Auto-detect" style="max-width:160px;">
+                                    <option value="auto">Auto</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Sindh">Sindh</option>
+                                    <option value="KPK">KPK</option>
+                                    <option value="Balochistan">Balochistan</option>
+                                    <option value="Gilgit">Gilgit</option>
+                                    <option value="Islamabad">Islamabad</option>
+                                </select>
+                <!-- Edit thresholds (opens modal) -->
+                <button id="editThresholdsBtn" class="btn btn-outline-success" title="Edit thresholds"><i class="fas fa-sliders-h"></i></button>
+                <button id="refreshBtn" class="btn btn-outline-success" title="Refresh last location/search"><i class="fas fa-sync"></i></button>
+            </div>
+        </div>
+    </section>
+
+    <!-- LOADING -->
+    <div class="container">
+        <div id="loadingSpinner" class="loading-spinner mt-3 text-center">
+            <div class="spinner-border" role="status" style="width:3rem;height:3rem;color:var(--primary-color);">
+                <span class="visually-hidden">Loading...</span>
+            </div>
+            <p class="mt-2 text-muted">Fetching weather...</p>
+        </div>
+    </div>
+
+    <!-- RESULTS -->
+    <main class="container" id="results" aria-live="polite">
+
+        <!-- Current -->
+        <section id="currentWeather" class="card-block" style="display:none;">
+            <div class="d-flex align-items-center gap-3 flex-wrap">
+                <div class="text-center" style="min-width:160px;">
+                    <div id="currentWeatherIcon" class="weather-icon"><i class="fas fa-sun"></i></div>
+                    <p id="currentTemperature" class="h3 mb-0"></p>
+                    <p id="currentDescription" class="mb-0 text-muted"></p>
+                </div>
+                <div style="flex:1;">
+                    <h2><i class="fas fa-location-dot"></i> Current Weather — <span id="currentCity">—</span>
+                        <span id="detectedZoneBadge" class="badge bg-secondary ms-2" style="display:none;font-size:0.75rem;padding:0.35rem 0.5rem;"></span>
+                        <span id="detectedDistrictBadge" class="badge bg-light text-dark ms-1" style="display:none;font-size:0.75rem;padding:0.35rem 0.5rem;border:1px solid #e6e6e6;"></span>
+                    </h2>
+                    <div class="weather-details row">
+                        <div class="col-md-6">
+                            <p><strong>Feels like:</strong> <span id="currentFeelsLike">—</span></p>
+                            <p><strong>Humidity (max/min):</strong> <span id="currentHumidity">—</span></p>
+                        </div>
+                        <div class="col-md-6">
+                            <p><strong>Wind speed:</strong> <span id="currentWindSpeed">—</span></p>
+                            <p><strong>Sunrise / Sunset:</strong> <span id="currentSunrise">—</span> / <span id="currentSunset">—</span></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Forecast -->
+        <section id="forecast" class="card-block" style="display:none;">
+            <h2><i class="fas fa-cloud-sun"></i> 5-Day Forecast</h2>
+            <div class="forecast-grid" id="forecastGrid" aria-live="polite">
+                <!-- injected -->
+            </div>
+        </section>
+
+        <!-- Suitability summary (populated by weather.js) -->
+        <section id="suitabilitySection" class="card-block mt-3" style="display:none;">
+            <h3><i class="fas fa-seedling"></i> Crop Suitability</h3>
+            <div id="suitabilityContent"></div>
+        </section>
+
+        <!-- AI Advisory -->
+        <section id="aiAdvisory" class="card-block mt-3" style="display:none;">
+            <h3><i class="fas fa-brain"></i> AI Crop Advisory</h3>
+            <div id="aiAdvisoryContent">
+                <!-- injected by JS -->
+            </div>
+        </section>
+
+        <!-- Crop Care Cards -->
+        <section id="cropCareCards" class="card-block mt-3" style="display:none;">
+            <h3><i class="fas fa-tools"></i> Crop Care</h3>
+            <div class="row mt-2">
+                <div class="col-md-4">
+                    <div class="card-block">
+                        <h5>Fertilizer</h5>
+                        <div id="fertilizerAdvisoryContent"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-block">
+                        <h5>Watering</h5>
+                        <div id="wateringAdvisoryContent"></div>
+                    </div>
+                </div>
+                <div class="col-md-4">
+                    <div class="card-block">
+                        <h5>Pest & Disease Prevention</h5>
+                        <div id="pestPreventionContent"></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Threshold editor modal (used by editThresholdsBtn) -->
+        <div class="modal fade" id="thresholdModal" tabindex="-1" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title">Edit Thresholds</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div class="mb-2">
+                            <label class="form-label">Crop</label>
+                            <select id="modalCropSelect" class="form-select">
+                                        <option>Wheat</option>
+                                        <option>Rice</option>
+                                        <option>Cotton</option>
+                                        <option>Sugarcane</option>
+                                        <option>Maize</option>
+                                        <option>Other</option>
+                                    </select>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label">Zone</label>
+                            <select id="modalZoneSelect" class="form-select">
+                                        <option value="default">Auto / Default</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Sindh">Sindh</option>
+                                        <option value="KPK">KPK</option>
+                                        <option value="Balochistan">Balochistan</option>
+                                        <option value="Gilgit">Gilgit</option>
+                                    </select>
+                        </div>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="form-label">Ideal Max Lower</label>
+                                <input id="idealMaxLower" class="form-control" type="number" />
+                            </div>
+                            <div class="col-6">
+                                <label class="form-label">Ideal Max Upper</label>
+                                <input id="idealMaxUpper" class="form-control" type="number" />
+                            </div>
+                            <div class="col-6 mt-2">
+                                <label class="form-label">Ideal Min Lower</label>
+                                <input id="idealMinLower" class="form-control" type="number" />
+                            </div>
+                            <div class="col-6 mt-2">
+                                <label class="form-label">Ideal Min Upper</label>
+                                <input id="idealMinUpper" class="form-control" type="number" />
+                            </div>
+                            <div class="col-6 mt-2">
+                                <label class="form-label">Min Soil Temp (°C)</label>
+                                <input id="minSoilTemp" class="form-control" type="number" />
+                            </div>
+                            <div class="col-6 mt-2">
+                                <label class="form-label">Min Total Rain (5d mm)</label>
+                                <input id="minTotalRain5d" class="form-control" type="number" />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                        <button id="saveThresholdBtn" type="button" class="btn btn-primary">Save</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Error area -->
+        <div id="errorMessage" style="display:none;" class="card-block text-danger"></div>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer class="footer">
+        <div class="container d-flex flex-column flex-md-row justify-content-between align-items-center gap-2">
+            <div>© <span id="copyYear"></span> Farmer Aid — All rights reserved.</div>
+            <div class="small">Built with ❤ for farmers in Pakistan</div>
+        </div>
+    </footer>
+
+    <!-- Bootstrap JS bundle -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+    <!-- Toast container for threshold save/reset confirmations -->
+    <div class="position-fixed bottom-0 end-0 p-3" style="z-index: 1080;">
+        <div id="thresholdToast" class="toast align-items-center text-bg-light border" role="alert" aria-live="assertive" aria-atomic="true">
+            <div class="d-flex">
+                <div id="thresholdToastBody" class="toast-body">Saved</div>
+                <button type="button" class="btn-close me-2 m-auto" data-bs-dismiss="toast" aria-label="Close"></button>
+            </div>
+        </div>
+    </div>
+    <!-- Link to the separate JavaScript file -->
+    <script src="js/weather.js"></script>
+    <!-- Small hero background animation: subtle Ken Burns + lightweight mouse/scroll parallax -->
+    <style>
+        /* ensure the background layer animates smoothly and stays GPU-accelerated */
+        
+        .hero-bg-inner {
+            will-change: transform;
+            transform-origin: center center;
+            transition: transform 400ms cubic-bezier(.2, .9, .2, 1);
+            /* slight default scale to allow mouse-driven motion */
+            transform: scale(1.02) translate3d(0, 0, 0);
+        }
+        /* gentle slow zoom (fallback if JS is disabled) */
+        
+        @keyframes wa-hero-zoom {
+            0% {
+                transform: scale(1.02) translate3d(0, 0, 0);
+            }
+            50% {
+                transform: scale(1.06) translate3d(0, -6px, 0);
+            }
+            100% {
+                transform: scale(1.02) translate3d(0, 0, 0);
+            }
+        }
+        
+        .hero-section .hero-bg-inner.js-animated {
+            animation: wa-hero-zoom 26s ease-in-out infinite alternate;
+        }
+        /* moving sheen overlay for glossy look */
+        
+        .hero-shimmer {
+            position: absolute;
+            inset: 0;
+            z-index: 3;
+            pointer-events: none;
+            background: linear-gradient(120deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.06) 30%, rgba(255, 255, 255, 0.12) 50%, rgba(255, 255, 255, 0.02) 80%, rgba(255, 255, 255, 0) 100%);
+            transform: translateX(-40%);
+            opacity: 0.45;
+            mix-blend-mode: soft-light;
+            animation: hero-shimmer-move 10s linear infinite;
+        }
+        
+        @keyframes hero-shimmer-move {
+            to {
+                transform: translateX(60%);
+            }
+        }
+        /* drifting translucent cloud shapes using pseudo-elements on hero-clouds */
+        
+        .hero-clouds::before,
+        .hero-clouds::after {
+            content: '';
+            position: absolute;
+            border-radius: 80px;
+            background: radial-gradient(circle, rgba(255, 255, 255, 0.12), rgba(255, 255, 255, 0.02));
+            filter: blur(10px) saturate(110%);
+            opacity: 0.6;
+            pointer-events: none;
+        }
+        
+        .hero-clouds::before {
+            left: 5%;
+            top: 8%;
+            width: 480px;
+            height: 140px;
+            animation: cloud-drift-slow 48s linear infinite;
+        }
+        
+        .hero-clouds::after {
+            right: 6%;
+            top: 18%;
+            width: 340px;
+            height: 110px;
+            animation: cloud-drift-slow 62s linear infinite reverse;
+        }
+        
+        @keyframes cloud-drift-slow {
+            from {
+                transform: translateX(-10%);
+            }
+            to {
+                transform: translateX(110%);
+            }
+        }
+        /* Hero CTA enhanced animations */
+        
+        .hero-ctas .btn {
+            opacity: 0;
+            transform: translateY(10px) scale(0.98);
+            transition: transform .32s cubic-bezier(.2, .9, .2, 1), opacity .36s ease, box-shadow .18s ease;
+            box-shadow: 0 8px 20px rgba(10, 20, 30, 0.12);
+        }
+        /* entrance staggered */
+        
+        .hero-ctas .btn:first-child {
+            animation: hero-cta-in .5s ease .18s forwards;
+        }
+        
+        .hero-ctas .btn:last-child {
+            animation: hero-cta-in .5s ease .32s forwards;
+        }
+        
+        @keyframes hero-cta-in {
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+        /* hover micro-interactions */
+        
+        .hero-ctas .btn:hover {
+            transform: translateY(-4px) scale(1.02);
+            box-shadow: 0 18px 40px rgba(10, 20, 30, 0.18);
+        }
+        
+        .hero-ctas .btn:active {
+            transform: translateY(-2px) scale(0.995);
+        }
+    </style>
+
+    <script>
+        (function() {
+            // Lightweight parallax: mouse + scroll affecting the hero-bg-inner
+            document.addEventListener('DOMContentLoaded', function() {
+                const hero = document.querySelector('.hero-section');
+                if (!hero) return;
+                const bgInner = hero.querySelector('.hero-bg-inner');
+                if (!bgInner) return;
+
+                // enable CSS animation class (provides smooth Ken Burns)
+                bgInner.classList.add('js-animated');
+
+                let rafId = null;
+                let mouseX = 0,
+                    mouseY = 0;
+                let targetX = 0,
+                    targetY = 0;
+                let lastScroll = window.scrollY || window.pageYOffset;
+
+                // Mouse movement -> small translation (only on pointer-capable devices and if user hasn't requested reduced motion)
+                const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+                const isTouch = ('ontouchstart' in window) || navigator.maxTouchPoints > 0;
+                if (!reduceMotion && !isTouch) {
+                    hero.addEventListener('mousemove', function(e) {
+                        const r = hero.getBoundingClientRect();
+                        const px = (e.clientX - r.left) / r.width - 0.5; // -0.5 .. 0.5
+                        const py = (e.clientY - r.top) / r.height - 0.5;
+                        // target offsets in px
+                        targetX = px * 12; // horizontal range
+                        targetY = py * 8; // vertical range
+                        requestTick();
+                    }, {
+                        passive: true
+                    });
+                }
+
+                // Scroll -> vertical parallax translate
+                window.addEventListener('scroll', function() {
+                    lastScroll = window.scrollY || window.pageYOffset;
+                    requestTick();
+                }, {
+                    passive: true
+                });
+
+                function requestTick() {
+                    if (!rafId) rafId = requestAnimationFrame(update);
+                }
+
+                function update() {
+                    rafId = null;
+                    // smooth current mouse offsets towards target
+                    mouseX += (targetX - mouseX) * 0.12;
+                    mouseY += (targetY - mouseY) * 0.12;
+
+                    // small scroll offset based on viewport position to create parallax
+                    const heroRect = hero.getBoundingClientRect();
+                    const viewportCenter = (window.innerHeight || document.documentElement.clientHeight) / 2;
+                    // how far the hero center is from viewport center
+                    const heroCenterY = heroRect.top + heroRect.height / 2;
+                    const distFromCenter = (heroCenterY - viewportCenter) / (window.innerHeight || 1);
+                    const scrollOffset = Math.max(-20, Math.min(20, distFromCenter * -30));
+
+                    // combine transforms: scale for Ken Burns + translate for motion
+                    const scale = 1.03; // keep a slight scale
+                    const translate = `translate3d(${mouseX.toFixed(2)}px, ${ (mouseY + scrollOffset).toFixed(2)}px, 0)`;
+                    bgInner.style.transform = `${translate} scale(${scale})`;
+                }
+            });
+        })();
+    </script>
+</body>
+
+</html>

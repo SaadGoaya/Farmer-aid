@@ -1,0 +1,1068 @@
+/* style.css - Farmer Aid */
+
+
+/* Basic resets and typography */
+
+:root {
+    --brand-green: #1e7a3a;
+    --brand-earth: #8b6a3a;
+    --muted: #6c757d;
+    --glass: rgba(255, 255, 255, 0.85);
+}
+
+
+/* Body and nav spacing */
+
+body {
+    font-family: Inter, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial;
+    background: white;
+    color: #222;
+    padding-top: 72px;
+    /* reserve space for fixed navbar */
+}
+
+
+/* Navbar brand */
+
+.navbar .brand-text {
+    font-weight: 700;
+    color: var(--brand-green);
+}
+
+.navbar .logo-emoji {
+    font-size: 1.25rem;
+}
+
+
+/* HERO */
+
+.hero-section {
+    position: relative;
+    min-height: 72vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    overflow: hidden;
+    /* background image moved to .hero-bg for smoother, transform-based parallax */
+    background: transparent;
+    /* Avoid `background-attachment: fixed` which can cause repaint/jank on scroll in many browsers.
+    Use scroll + GPU-accelerated transform to reduce glitches. */
+    background-attachment: scroll;
+    -webkit-transform: translateZ(0);
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: transform, background-position;
+}
+
+
+/* Provide fallback remote image if local not present */
+
+.hero-section {
+    /* keep a subtle gradient overlay fallback */
+    background-image: linear-gradient(rgba(20, 40, 20, 0.2), rgba(20, 40, 20, 0.2));
+}
+
+
+/* Background layer used for transform-based parallax */
+
+.hero-bg {
+    /* Use CSS variable for translate so JS can update it without clobbering other transforms */
+    transform: translate3d(0, var(--hero-translate, 0px), 0);
+    will-change: transform;
+    z-index: 0;
+}
+
+
+/* Ken Burns slow scaling animation on top of parallax translate */
+
+@keyframes hero-zoom {
+    0% {
+        transform: scale(1.02);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+    100% {
+        transform: scale(1.02);
+    }
+}
+
+.hero-bg {
+    transform: translateZ(0);
+    will-change: transform;
+}
+
+
+/* Inner element holds the image and scale animation so JS can safely translate the parent */
+
+.hero-bg-inner {
+    position: absolute;
+    inset: 0;
+    background-image: url('https://images.unsplash.com/photo-1501004318641-b39e6451bec6?auto=format&fit=crop&w=1600&q=60');
+    background-size: cover;
+    background-position: center center;
+    transform-origin: center center;
+    transition: transform 0.25s linear;
+    animation: hero-zoom 24s ease-in-out infinite alternate;
+    /* darken and slightly desaturate base image so overlays read better */
+    filter: brightness(0.62) contrast(1.05) saturate(0.98);
+}
+
+
+/* Decorative sky elements: clouds and sun for depth */
+
+.hero-clouds {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.hero-clouds .cloud {
+    position: absolute;
+    top: 12%;
+    width: 420px;
+    height: 120px;
+    /* much softer, less bright cloud blobs for professional look */
+    background: radial-gradient(closest-side, rgba(240, 240, 242, 0.6) 30%, rgba(235, 238, 241, 0.45) 55%, rgba(230, 235, 240, 0.28) 80%, rgba(220, 225, 230, 0.12) 100%);
+    border-radius: 80px;
+    filter: blur(8px) saturate(110%);
+    opacity: 0.7;
+    transform: translateX(-10%);
+}
+
+.hero-clouds .cloud::before,
+.hero-clouds .cloud::after {
+    content: '';
+    position: absolute;
+    background: inherit;
+    width: 60%;
+    height: 90%;
+    top: 8%;
+    border-radius: 80px;
+    filter: inherit;
+    opacity: 0.95;
+}
+
+.hero-clouds .cloud::before {
+    left: -18%;
+}
+
+.hero-clouds .cloud::after {
+    right: -18%;
+}
+
+
+/* Variants with different sizes/vertical positions */
+
+.hero-clouds .c1 {
+    left: -30%;
+    top: 6%;
+    width: 640px;
+    height: 160px;
+    opacity: 0.9;
+}
+
+.hero-clouds .c2 {
+    left: 10%;
+    top: 18%;
+    width: 460px;
+    height: 120px;
+    opacity: 0.8;
+    filter: blur(6px);
+}
+
+.hero-clouds .c3 {
+    left: 55%;
+    top: 10%;
+    width: 520px;
+    height: 140px;
+    opacity: 0.75;
+    filter: blur(7px);
+}
+
+@keyframes cloud-drift-1 {
+    from {
+        transform: translateX(-20%);
+    }
+    to {
+        transform: translateX(120%);
+    }
+}
+
+@keyframes cloud-drift-2 {
+    from {
+        transform: translateX(-10%);
+    }
+    to {
+        transform: translateX(100%);
+    }
+}
+
+@keyframes cloud-drift-3 {
+    from {
+        transform: translateX(-30%);
+    }
+    to {
+        transform: translateX(110%);
+    }
+}
+
+.hero-clouds .c1 {
+    animation: cloud-drift-1 48s linear infinite;
+}
+
+.hero-clouds .c2 {
+    animation: cloud-drift-2 62s linear infinite;
+}
+
+.hero-clouds .c3 {
+    animation: cloud-drift-3 56s linear infinite;
+}
+
+
+/* Make decorative clouds blend darker (multiply) so they don't wash text */
+
+.hero-clouds,
+.hero-cloud-svg {
+    mix-blend-mode: multiply;
+    opacity: 0.92;
+}
+
+.hero-cloud-svg {
+    filter: contrast(0.94) brightness(0.9);
+}
+
+
+/* A subtle pulsing sun/ambient light */
+
+.hero-sun {
+    position: absolute;
+    right: 8%;
+    top: 8%;
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: radial-gradient(circle at 30% 30%, rgba(255, 244, 200, 0.88), rgba(255, 200, 80, 0.46) 40%, rgba(255, 140, 40, 0.12) 65%, rgba(255, 120, 20, 0) 75%);
+    filter: blur(6px) saturate(110%);
+    opacity: 0.78;
+    z-index: 1;
+    pointer-events: none;
+    transform: translateZ(0);
+    animation: sun-pulse 8s ease-in-out infinite;
+}
+
+@keyframes sun-pulse {
+    0% {
+        transform: scale(0.98);
+        opacity: 0.92
+    }
+    50% {
+        transform: scale(1.03);
+        opacity: 1
+    }
+    100% {
+        transform: scale(0.98);
+        opacity: 0.92
+    }
+}
+
+
+/* moving sheen to add a modern glossy look */
+
+.hero-sheen {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    /* keep beneath overlay and content */
+    pointer-events: none;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.02) 0%, rgba(255, 255, 255, 0.008) 30%, rgba(255, 255, 255, 0.0) 45%);
+    mix-blend-mode: soft-light;
+    transform: translateX(-40%);
+    animation: sheen-move 10s linear infinite;
+    opacity: 0.45;
+}
+
+@keyframes sheen-move {
+    to {
+        transform: translateX(60%);
+    }
+}
+
+
+/* Ensure sheen is subtle on mobile */
+
+@media (max-width: 767px) {
+    .hero-sheen {
+        opacity: 0.6;
+        animation-duration: 12s;
+    }
+}
+
+
+/* modern vignette + rays for a polished look */
+
+.hero-vignette {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    z-index: 7;
+    background: radial-gradient(60% 50% at 50% 40%, rgba(0, 0, 0, 0.02), rgba(0, 0, 0, 0.3));
+    mix-blend-mode: multiply;
+}
+
+.hero-rays {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    background: radial-gradient(ellipse at center, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 30%);
+    mask-image: linear-gradient(180deg, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0.2));
+    transform: rotate(-6deg) translateY(-6%);
+    filter: blur(8px) saturate(120%);
+    animation: rays-slow 18s linear infinite;
+}
+
+@keyframes rays-slow {
+    from {
+        transform: rotate(-6deg) translateY(-6%);
+    }
+    to {
+        transform: rotate(-2deg) translateY(6%);
+    }
+}
+
+
+/* Particle system: soft floating dust / pollen to add life */
+
+.hero-particles {
+    position: absolute;
+    inset: 0;
+    z-index: 3;
+    pointer-events: none;
+    overflow: visible;
+}
+
+.hero-particles .particle {
+    position: absolute;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.95), rgba(255, 255, 255, 0.6));
+    opacity: 0.0;
+    transform: translate3d(0, 0, 0);
+    will-change: transform, opacity;
+    filter: blur(1px) saturate(110%);
+}
+
+@keyframes particle-float {
+    0% {
+        transform: translateY(0) scale(0.9);
+        opacity: 0;
+    }
+    20% {
+        opacity: 0.7;
+    }
+    100% {
+        transform: translateY(-140px) scale(1.2);
+        opacity: 0;
+    }
+}
+
+
+/* Ensure subtlety on mobile */
+
+@media (max-width: 767px) {
+    .hero-vignette {
+        opacity: 0.9;
+    }
+    .hero-rays {
+        display: none;
+    }
+    .hero-clouds .cloud {
+        opacity: 0.7;
+    }
+}
+
+
+/* Cloud breathing (subtle scale) to give life when stationary */
+
+.hero-clouds .cloud {
+    animation-timing-function: ease-in-out;
+}
+
+@keyframes cloud-breathe {
+    0% {
+        transform: scale(0.995);
+    }
+    50% {
+        transform: scale(1.01);
+    }
+    100% {
+        transform: scale(0.995);
+    }
+}
+
+.hero-clouds .cloud {
+    animation: cloud-breathe 24s ease-in-out infinite;
+}
+
+
+/* Foreground plant layer: visible and slightly above content, animated independently */
+
+.hero-plant {
+    position: absolute;
+    right: clamp(3%, 6vw, 8%);
+    bottom: clamp(1.6rem, 3.5vh, 5rem);
+    width: clamp(200px, 22vw, 360px);
+    z-index: 3;
+    pointer-events: none;
+    transform-origin: center bottom;
+    will-change: transform, opacity;
+    opacity: 0.99;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.30));
+    transition: transform 0.22s cubic-bezier(.2, .9, .2, 1), right 0.22s ease, bottom 0.22s ease;
+}
+
+
+/* gentle sway for the plant (CSS-driven subtle motion) */
+
+@keyframes plant-sway {
+    0% {
+        transform: translateY(0) rotate(-0.8deg);
+    }
+    50% {
+        transform: translateY(-6px) rotate(1.6deg);
+    }
+    100% {
+        transform: translateY(0) rotate(-0.8deg);
+    }
+}
+
+.hero-plant-inner {
+    animation: plant-sway 6.5s ease-in-out infinite;
+}
+
+
+/* Medium screens: move plant to center-bottom so it doesn't collide with controls */
+
+@media (max-width: 1024px) and (min-width: 640px) {
+    .hero-plant {
+        left: 50%;
+        right: auto;
+        transform: translateX(-50%);
+        width: clamp(220px, 34vw, 420px);
+        bottom: clamp(1.6rem, 4vh, 4.5rem);
+    }
+}
+
+
+/* Tall hero: nudge plant up to keep it visible above the bottom fade */
+
+@media (min-height: 820px) {
+    .hero-plant {
+        bottom: clamp(2.5rem, 5vh, 7rem);
+    }
+}
+
+
+/* Mobile fallback: hide the decorative plant to save space and avoid collisions */
+
+@media (max-width: 639px) {
+    .hero-plant {
+        display: none;
+    }
+}
+
+
+/* Respect reduced motion preferences */
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-plant-inner {
+        animation: none !important;
+    }
+    .hero-bg-inner {
+        animation: none !important;
+    }
+    .hero-tilt {
+        transform: none !important;
+    }
+}
+
+
+/* ---------- Advanced volumetric clouds & sun (higher polish) ---------- */
+
+.hero-cloud-svg {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.hero-cloud-svg svg {
+    width: 100%;
+    height: 100%;
+    display: block;
+}
+
+.hero-cloud-svg .cloud-layer {
+    transform-origin: center;
+    will-change: transform;
+}
+
+
+/* add subtle inner-shadow effect to make clouds pop */
+
+.hero-cloud-svg svg g {
+    mix-blend-mode: screen;
+    filter: drop-shadow(0 12px 24px rgba(0, 0, 0, 0.12));
+}
+
+
+/* stronger cloud look */
+
+.hero-cloud-svg .cloud-layer ellipse {
+    fill: url(#cloudGrad);
+    opacity: 0.95;
+}
+
+
+/* rotating sun halo for drama */
+
+.hero-sun {
+    position: absolute;
+    overflow: visible;
+}
+
+.hero-sun .halo {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 300%;
+    height: 300%;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+    filter: blur(32px);
+    opacity: 0.28;
+    animation: halo-rotate 28s linear infinite;
+}
+
+.hero-sun .halo.h1 {
+    background: radial-gradient(circle, rgba(255, 220, 140, 0.55), rgba(255, 160, 30, 0.05));
+}
+
+.hero-sun .halo.h2 {
+    background: radial-gradient(circle, rgba(255, 240, 200, 0.45), rgba(255, 160, 80, 0.02));
+    width: 220%;
+    height: 220%;
+    animation-duration: 36s;
+    opacity: 0.22;
+}
+
+@keyframes halo-rotate {
+    from {
+        transform: translate(-50%, -50%) rotate(0deg);
+    }
+    to {
+        transform: translate(-50%, -50%) rotate(360deg);
+    }
+}
+
+
+/* Intensify god-rays */
+
+.hero-godrays {
+    opacity: 0.98;
+}
+
+.hero-godrays::before {
+    filter: blur(46px);
+    opacity: 0.95;
+}
+
+
+/* God-rays overlay (soft volumetric light from sun) */
+
+.hero-godrays {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    pointer-events: none;
+    background: radial-gradient(ellipse at 85% 12%, rgba(255, 230, 160, 0.12), rgba(255, 230, 160, 0.03) 12%, rgba(0, 0, 0, 0) 40%);
+    mix-blend-mode: screen;
+}
+
+.hero-godrays::before {
+    content: '';
+    position: absolute;
+    left: 20%;
+    top: -20%;
+    right: -40%;
+    bottom: 20%;
+    background: linear-gradient(120deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0) 30%);
+    transform: rotate(-8deg) skewX(-6deg);
+    filter: blur(32px) saturate(120%);
+    opacity: 0.9;
+}
+
+
+/* Enhanced sun lens-flare */
+
+.hero-sun {
+    transition: transform .15s ease;
+}
+
+.hero-sun .flare {
+    position: absolute;
+    inset: 12%;
+    border-radius: 50%;
+    pointer-events: none;
+    mix-blend-mode: screen;
+}
+
+.hero-sun .flare.f1 {
+    background: radial-gradient(circle, rgba(255, 230, 180, 0.7), rgba(255, 160, 60, 0.12));
+    width: 60%;
+    height: 60%;
+    left: 20%;
+    top: 20%;
+    filter: blur(12px);
+}
+
+.hero-sun .flare.f2 {
+    background: radial-gradient(circle, rgba(255, 255, 255, 0.45), rgba(255, 190, 80, 0.08));
+    width: 36%;
+    height: 36%;
+    left: 32%;
+    top: 8%;
+    filter: blur(6px);
+    opacity: 0.95;
+}
+
+
+/* stronger 3D tilt for more impact (will be damped for accessibility/mobile) */
+
+.hero-tilt {
+    transition: transform 0.12s cubic-bezier(.18, .9, .3, 1);
+    transform-style: preserve-3d;
+}
+
+
+/* ensure hero content is top-most and highly readable */
+
+.hero-content {
+    z-index: 12 !important;
+    position: relative;
+}
+
+.hero-content h1,
+.hero-content h2 {
+    text-shadow: 0 14px 34px rgba(0, 0, 0, 0.72);
+    background: rgba(0, 0, 0, 0.42);
+    padding: 10px 18px;
+    border-radius: 12px;
+    display: inline-block;
+    color: #ffffff;
+    font-weight: 800;
+    line-height: 1.02;
+}
+
+.hero-content p {
+    text-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-cloud-svg,
+    .hero-godrays,
+    .hero-particles {
+        display: none !important;
+    }
+}
+
+
+/* Tilt container that will receive mousemove-based transforms on large screens */
+
+.hero-tilt {
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    transform-style: preserve-3d;
+}
+
+
+/* Mobile fallback: reduce motion and hide heavy parallax */
+
+@media (max-width: 767px) {
+    .hero-bg-inner {
+        animation-duration: 28s;
+    }
+    .hero-plant {
+        display: none;
+    }
+    .hero-section {
+        will-change: auto;
+    }
+}
+
+
+/* Move overlay slightly (differential parallax) using CSS var set by JS */
+
+.hero-overlay {
+    transform: translate3d(0, var(--overlay-translate, 0px), 0);
+    will-change: transform;
+}
+
+
+/* extra overlay for readability */
+
+.hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgba(10, 40, 20, 0.45), rgba(6, 20, 10, 0.45));
+    z-index: 0;
+}
+
+
+/* Hero content */
+
+.hero-content {
+    z-index: 2;
+    max-width: 900px;
+    padding: 6rem 1rem;
+    text-shadow: 0 6px 18px rgba(0, 0, 0, 0.35);
+}
+
+.hero-title {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 800;
+    letter-spacing: -1px;
+    margin-bottom: .5rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 1s ease forwards 0.3s;
+    color: #fff;
+}
+
+.hero-tagline {
+    font-size: 1.1rem;
+    margin-bottom: .8rem;
+    opacity: 0;
+    transform: translateY(10px);
+    animation: fadeUp 1s ease forwards 0.6s;
+}
+
+
+/* CTA button styles */
+
+.hero-ctas .btn {
+    border-radius: 8px;
+    box-shadow: 0 6px 18px rgba(18, 55, 22, 0.18);
+}
+
+
+/* subtle bottom fade to white */
+
+.hero-bottom-fade {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 140px;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0) 0%, rgba(255, 255, 255, 0.95) 85%, #fff 100%);
+    z-index: 1;
+    pointer-events: none;
+}
+
+
+/* Animations */
+
+@keyframes fadeUp {
+    to {
+        opacity: 1;
+        transform: none;
+    }
+}
+
+
+/* Crop cards hover effect */
+
+.crop-card {
+    transition: transform 0.35s ease, box-shadow 0.35s ease;
+    border: none;
+    border-radius: 12px;
+    overflow: hidden;
+}
+
+.crop-card img {
+    height: 160px;
+    object-fit: cover;
+}
+
+.crop-card:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 18px 35px rgba(15, 60, 20, 0.12);
+}
+
+
+/* Buttons hover */
+
+button.btn,
+a.btn {
+    transition: transform .18s ease, box-shadow .18s ease;
+}
+
+button.btn:hover,
+a.btn:hover {
+    transform: translateY(-3px);
+}
+
+
+/* Weather card small styles */
+
+#weatherCard .display-5 {
+    font-size: clamp(2rem, 4vw, 2.6rem);
+}
+
+
+/* Footer */
+
+.footer {
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+
+/* Responsive tweaks */
+
+@media (max-width: 767px) {
+    .hero-content {
+        padding: 4rem 1rem;
+    }
+    .crop-card img {
+        height: 140px;
+    }
+}
+
+
+/* Parallax subtle movement with transform (JS will adjust CSS variable) */
+
+.hero-section::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    /* Use a static center position to avoid frequent repaints from CSS vars on scroll */
+    background-position: center center;
+    z-index: 0;
+    pointer-events: none;
+}
+
+
+/* Tiny utility */
+
+.small {
+    font-size: .9rem;
+}
+
+
+/* -------------------------
+   GENERAL
+------------------------- */
+
+body {
+    font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+    background: #f9fafb;
+    padding-top: 70px;
+    /* navbar spacing */
+}
+
+h1,
+h2,
+h3,
+h4,
+h5 {
+    font-weight: 700;
+}
+
+p {
+    margin-bottom: 0.5rem;
+}
+
+
+/* -------------------------
+   NAVBAR
+------------------------- */
+
+.navbar .brand-text {
+    font-weight: 600;
+    font-size: 1.3rem;
+}
+
+
+/* -------------------------
+   HERO SECTION
+------------------------- */
+
+.weather-hero {
+    position: relative;
+    height: 70vh;
+    background: url("https://images.unsplash.com/photo-1504384308090-c894fdcc538d") center/cover no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.weather-hero .hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+}
+
+.weather-hero .hero-content {
+    position: relative;
+    z-index: 2;
+}
+
+.weather-hero h1 {
+    font-size: 3rem;
+    animation: fadeDown 1s ease-in-out;
+}
+
+.weather-hero p {
+    font-size: 1.25rem;
+    animation: fadeUp 1s ease-in-out;
+}
+
+.hero-bottom-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 100px;
+    background: linear-gradient(to top, #f9fafb, transparent);
+}
+
+
+/* -------------------------
+   SEARCH TOOL
+------------------------- */
+
+.weather-tool {
+    border-radius: 1rem;
+    background: #ffffff;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.weather-tool:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.12);
+}
+
+.weather-tool input,
+.weather-tool select {
+    border-radius: 0.75rem;
+    padding: 0.75rem 1rem;
+}
+
+.weather-tool button {
+    border-radius: 0.75rem;
+    transition: background 0.3s ease, transform 0.2s ease;
+}
+
+.weather-tool button:hover {
+    transform: scale(1.05);
+}
+
+
+/* -------------------------
+   RESULTS SECTION
+------------------------- */
+
+#results {
+    margin-top: 2rem;
+}
+
+.weather-card {
+    background: #ffffff;
+    border-radius: 1rem;
+    padding: 1.5rem;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    text-align: center;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.weather-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
+.weather-icon {
+    font-size: 3rem;
+    margin-bottom: 0.5rem;
+    color: #0d6efd;
+    animation: pulse 2s infinite;
+}
+
+.weather-temp {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #198754;
+}
+
+.weather-extra {
+    font-size: 0.9rem;
+    color: #555;
+    margin-top: 0.5rem;
+}
+
+
+/* -------------------------
+   FOOTER
+------------------------- */
+
+.footer {
+    font-size: 0.9rem;
+}
+
+
+/* -------------------------
+   ANIMATIONS
+------------------------- */
+
+@keyframes fadeDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulse {
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+    50% {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+}

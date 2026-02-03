@@ -1,0 +1,37 @@
+/* Minimal app styles to complement existing css/style.css */
+body { font-family: Poppins, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial; }
+/* Mobile-first styles */
+.hero-section { background: linear-gradient(180deg,#2f8b3a,#3bbf59); color: white; padding: 2.5rem 1rem; }
+.hero-title { font-size: 1.8rem; font-weight:800; margin: 0 0 .5rem }
+.hero-tagline { opacity: 0.95; margin-bottom: .75rem }
+
+/* Subtle hero animation */
+.hero-section { transition: transform .45s ease, opacity .4s ease }
+.hero-cta-animated { transform: translateY(6px); transition: transform .36s cubic-bezier(.2,.9,.2,1) }
+
+
+.chat-wrap { display: flex; flex-direction: column; gap: 1rem }
+@media (min-width: 768px) {
+  .chat-wrap { flex-direction: row }
+  .chat-sidebar { max-width: 320px; flex: 0 0 320px }
+}
+
+/* Chat bubbles and responsiveness */
+.messages .p-2 { word-break: break-word }
+.chat-main .messages { max-height: 420px }
+
+/* Navbar mobile tweaks */
+.navbar-brand { display:flex; align-items:center; gap:.5rem }
+.navbar-nav .nav-link { padding:.5rem .75rem }
+
+@media (min-width: 992px) {
+  .hero-section { padding: 3.5rem 0 }
+  .hero-title { font-size: clamp(2.2rem,4vw,3.2rem) }
+}
+
+/* Make messages scroll nicely */
+.messages { scrollbar-width: thin }
+
+/* Ensure navbar brand styles still apply */
+.logo-emoji { font-size: 1.4rem }
+.brand-text { color: var(--primary-color); font-weight:700 }

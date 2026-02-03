@@ -1,0 +1,878 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AgriGuide AI - Your Education & Career Guide</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <style>
+        /* CSS variables: Cyan-Blue for Chat UI, Green for Navbar */
+        
+         :root {
+            --primary-color: #17a2b8;
+            /* Original CHAT UI/Button color (Cyan-Blue) */
+            --navbar-green: #4CAF50;
+            /* Green color from about.html for Navbar elements */
+            --secondary-color: #007bff;
+            --dark-bg: #2c3e50;
+            --light-bg: #f8f9fa;
+            --text-dark: #212529;
+            --text-light: #f8f9fa;
+            --text-muted: #6c757d;
+            --user-message-bg-start: #2575fc;
+            --user-message-bg-end: #6a11cb;
+            --ai-message-bg: #ffffff;
+            --system-message-bg: #fff3cd;
+            --error-message-bg: #f8d7da;
+            --border-radius-main: 12px;
+            --border-radius-chat: 18px;
+            --border-radius-small: 6px;
+            --status-red: #e74c3c;
+            /* Red dot/clear button */
+            --status-yellow: #f1c40f;
+            /* Yellow dot */
+            --status-green: #20c997;
+            /* Green dot */
+            --shadow-soft: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-medium: 0 6px 15px rgba(0, 0, 0, 0.1);
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 72px 0 0 0;
+            /* Padding for fixed navbar */
+            background-color: var(--light-bg);
+            color: var(--text-dark);
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+        }
+        /* --- START: Navbar Styles (Green) --- */
+        /* Note: Using the original AgriGuide AI logo text, but applying the green coloring */
+        
+        .logo-emoji {
+            font-size: 1.5rem;
+            line-height: 1;
+        }
+        
+        .brand-text {
+            font-weight: 700;
+            font-size: 1.25rem;
+            /* Logo text color set to green */
+            color: var(--navbar-green);
+        }
+        
+        .navbar-brand .spark-part {
+            /* The second half of the logo text also set to green */
+            color: var(--navbar-green);
+        }
+        
+        .navbar-nav .nav-link {
+            font-weight: 600;
+            color: #555 !important;
+            transition: color 0.3s;
+        }
+        
+        .navbar-nav .nav-link:hover,
+        .navbar-nav .nav-link.active {
+            /* Nav link hover/active color set to green */
+            color: var(--navbar-green) !important;
+        }
+        /* --- END: Navbar Styles --- */
+        
+        /* --- START: Chat UI Styles (Cyan-Blue) --- */
+        
+        * {
+            box-sizing: border-box;
+            scrollbar-width: thin;
+            /* Scrollbar uses Cyan-Blue primary color */
+            scrollbar-color: var(--primary-color) var(--light-bg);
+        }
+        
+        .chat-output::-webkit-scrollbar-thumb {
+            /* Scrollbar thumb uses Cyan-Blue primary color */
+            background: var(--primary-color);
+            border-radius: var(--border-radius-small);
+        }
+        
+        .chat-output::-webkit-scrollbar-thumb:hover {
+            /* Darker Cyan on hover */
+            background: #128293;
+        }
+        
+        .log-entry.ai-message .log-sender {
+            /* AI sender name uses Cyan-Blue primary color */
+            color: var(--primary-color);
+        }
+        
+        .log-entry.ai-message strong {
+            /* AI bold text uses Cyan-Blue primary color */
+            color: var(--primary-color);
+        }
+        
+        .chat-input-area input[type="text"]:focus {
+            outline: none;
+            /* Input border uses Cyan-Blue primary color */
+            border-color: var(--primary-color);
+            /* Input focus shadow uses Cyan-Blue primary color (rgba(23, 162, 184, 0.25)) */
+            box-shadow: 0 0 0 3px rgba(23, 162, 184, 0.25);
+        }
+        
+        .chat-input-area button#send-btn {
+            /* Send button uses Cyan-Blue primary color */
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-chat);
+            cursor: pointer;
+            font-size: 1em;
+            font-weight: 600;
+            transition: background-color 0.2s, transform 0.1s;
+        }
+        
+        .chat-input-area button#send-btn:hover {
+            /* Darker Cyan on hover */
+            background-color: #128293;
+            transform: translateY(-1px);
+        }
+        
+        .chat-controls button#clear-log-btn {
+            /* Clear chat button uses Red status color (original style) */
+            background-color: var(--status-red);
+        }
+        
+        .chat-controls button#clear-log-btn:hover {
+            background-color: #c0392b;
+        }
+        /* --- END: Chat UI Styles --- */
+        
+        
+        /* The rest of the original styles (status dots, layout, etc.) remain */
+        
+        html,
+        body {
+            height: 100%;
+            overflow: hidden;
+        }
+        
+        .container-main {
+            width: 100%;
+            margin: 0 auto;
+            padding: 15px;
+            display: flex;
+            flex-direction: column;
+            flex-grow: 1;
+            min-height: 0;
+            background-color: transparent;
+            box-shadow: none;
+        }
+        
+        .chat-area {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+            background-color: #fff;
+            border-radius: var(--border-radius-main);
+            box-shadow: var(--shadow-medium);
+            border: 1px solid #e0e0e0;
+            margin-top: 15px;
+        }
+        
+        .chat-output {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: #f7f9fc;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        
+        .chat-output::-webkit-scrollbar {
+            width: 7px;
+        }
+        
+        .chat-output::-webkit-scrollbar-track {
+            background: #e9ecef;
+            border-radius: var(--border-radius-small);
+        }
+        
+        .log-entry {
+            padding: 12px 18px;
+            max-width: 80%;
+            word-wrap: break-word;
+            line-height: 1.55;
+            box-shadow: var(--shadow-soft);
+            border: none;
+        }
+        
+        .log-entry.user-message {
+            background: linear-gradient(135deg, var(--user-message-bg-start), var(--user-message-bg-end));
+            color: var(--text-light);
+            align-self: flex-end;
+            border-radius: var(--border-radius-chat) var(--border-radius-chat) var(--border-radius-small) var(--border-radius-chat);
+        }
+        
+        .log-entry.ai-message {
+            background-color: var(--ai-message-bg);
+            color: var(--text-dark);
+            align-self: flex-start;
+            border-radius: var(--border-radius-chat) var(--border-radius-chat) var(--border-radius-chat) var(--border-radius-small);
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05), inset 0 0 0 1px #e9ecef;
+        }
+        
+        .log-entry.ai-message table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 12px;
+            font-size: 0.9em;
+            background-color: #fdfdfd;
+        }
+        
+        .log-entry.ai-message th,
+        .log-entry.ai-message td {
+            border: 1px solid #e0e0e0;
+            padding: 8px 10px;
+            text-align: left;
+            word-break: break-word;
+        }
+        
+        .log-entry.ai-message th {
+            background-color: #f1f3f5;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+        
+        .log-entry.system-message,
+        .log-entry.warning-message {
+            background-color: var(--system-message-bg);
+            color: #664d03;
+            align-self: center;
+            font-style: italic;
+            font-size: 0.9em;
+            max-width: 90%;
+            text-align: center;
+            padding: 8px 12px;
+            border: 1px solid #ffecb5;
+            border-radius: var(--border-radius-small);
+            box-shadow: none;
+        }
+        
+        .log-entry.error-message {
+            background-color: var(--error-message-bg);
+            color: #721c24;
+            align-self: stretch;
+            border: 1px solid #f5c6cb;
+            border-radius: var(--border-radius-small);
+            text-align: left;
+            box-shadow: none;
+        }
+        
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 6px;
+            font-size: 0.8em;
+        }
+        
+        .log-entry.user-message .message-header {
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .log-entry.ai-message .message-header {
+            color: var(--text-muted);
+        }
+        
+        .log-sender {
+            font-weight: 700;
+        }
+        
+        .log-entry.user-message .log-sender {
+            color: var(--text-light);
+        }
+        
+        .log-content {
+            white-space: pre-wrap;
+        }
+        
+        .log-content p {
+            margin-top: 0;
+            margin-bottom: 0.5em;
+        }
+        
+        .log-content p:last-child {
+            margin-bottom: 0;
+        }
+        
+        .log-content strong {
+            font-weight: 700;
+            color: inherit;
+        }
+        
+        .log-entry.user-message strong {
+            color: var(--text-light);
+        }
+        
+        .chat-input-area {
+            display: flex;
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            background-color: #ffffff;
+            flex-shrink: 0;
+        }
+        
+        .chat-input-area input[type="text"] {
+            flex-grow: 1;
+            padding: 12px 18px;
+            border: 1px solid #ced4da;
+            border-radius: var(--border-radius-chat);
+            font-size: 1em;
+            margin-right: 12px;
+            transition: border-color 0.2s, box-shadow 0.2s;
+        }
+        
+        .chat-input-area button#send-btn:active {
+            transform: translateY(0px);
+        }
+        
+        .chat-controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 20px;
+            background: linear-gradient(to bottom, #ffffff, #f7f9fc);
+            border-bottom: 1px solid #e9ecef;
+            flex-shrink: 0;
+        }
+        
+        .chat-controls .buttons-right button {
+            margin-left: 10px;
+        }
+        
+        .chat-controls button {
+            padding: 7px 14px;
+            color: white;
+            border: none;
+            border-radius: var(--border-radius-small);
+            cursor: pointer;
+            font-size: 0.88em;
+            font-weight: 600;
+            transition: background-color 0.2s, box-shadow 0.2s;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        
+        .chat-controls button:hover {
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.15);
+            transform: translateY(-1px);
+        }
+        
+        .chat-controls button:active {
+            transform: translateY(0px);
+            box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-indicators {
+            display: flex;
+            gap: 18px;
+            align-items: center;
+        }
+        
+        .status-item {
+            display: flex;
+            align-items: center;
+            font-size: 0.85em;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+        
+        .status-dot {
+            width: 11px;
+            height: 11px;
+            border-radius: 50%;
+            margin-right: 7px;
+            transition: background-color 0.3s, box-shadow 0.3s;
+            border: 1px solid rgba(0, 0, 0, 0.1);
+        }
+        
+        .status-dot.red {
+            background-color: var(--status-red);
+            box-shadow: 0 0 6px rgba(231, 76, 60, 0.5);
+        }
+        
+        .status-dot.yellow {
+            background-color: var(--status-yellow);
+            box-shadow: 0 0 6px rgba(241, 196, 15, 0.5);
+        }
+        
+        .status-dot.green {
+            background-color: var(--status-green);
+            box-shadow: 0 0 6px rgba(32, 201, 151, 0.5);
+        }
+        
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(248, 249, 250, 0.97);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5em;
+            color: var(--text-dark);
+            z-index: 9999;
+            transition: opacity 0.3s ease-out;
+        }
+        
+        .loading-overlay.hidden {
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        @media (max-width: 768px) {
+            .container-main {
+                margin: 0;
+                padding: 10px;
+                border-radius: 0;
+            }
+            .chat-area {
+                border-radius: var(--border-radius-main);
+                margin-top: 10px;
+            }
+            .log-entry {
+                max-width: 90%;
+                padding: 10px 15px;
+            }
+            .chat-input-area {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px 15px;
+            }
+            .chat-input-area input[type="text"] {
+                margin-right: 0;
+                padding: 10px 15px;
+            }
+            .chat-input-area button#send-btn {
+                padding: 10px 20px;
+            }
+            .chat-controls {
+                flex-direction: column;
+                gap: 12px;
+                align-items: stretch;
+                padding: 12px 15px;
+            }
+            .chat-controls .status-indicators {
+                justify-content: center;
+            }
+            .chat-controls .buttons-right {
+                display: flex;
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div id="loading-overlay">Loading AgriGuide AI...</div>
+
+    <nav class="navbar navbar-expand-lg navbar-light bg-white fixed-top shadow-sm">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+                <span class="logo-emoji">🌾</span>
+                <span class="brand-text">Agri<span class="spark-part">Guide AI</span></span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#mainNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="mainNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="index.html">Home</a></li>
+                    <li class="nav-item"><a class="nav-link" href="weather.html">Weather</a></li>
+                    <li class="nav-item"><a class="nav-link" href="diseases.html">Diseases</a></li>
+                    <li class="nav-item"><a class="nav-link" href="ai-assistant.html">AI Assistant</a></li>
+                    <li class="nav-item"><a class="nav-link" href="about.html">About</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+    <main class="container-main">
+        <div class="chat-area">
+            <div class="chat-controls">
+                <div class="status-indicators">
+                    <div class="status-item">
+                        <span id="ai-status-dot" class="status-dot yellow"></span>
+                        <span id="ai-status-text">AI Standby</span>
+                    </div>
+                </div>
+                <div class="buttons-right">
+                    <button id="clear-log-btn" title="Clear Chat History">Clear Chat</button>
+                </div>
+            </div>
+            <div id="chat-output" class="chat-output">
+            </div>
+            <div class="chat-input-area">
+                <input type="text" id="chat-input" placeholder="Ask AgriGuide about courses, careers, or online work...">
+                <button id="send-btn">Send</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer bg-dark text-white py-3">
+        <div class="container d-flex justify-content-between align-items-center">
+            <div>© <span id="currentYear"></span> AgriGuide AI — All rights reserved.</div>
+            <div class="small">Built with ❤ for farmers</div>
+        </div>
+    </footer>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+
+    <script type="module">
+        
+        // Gemini API requests are proxied via the backend at /api/gemini
+        const CHAT_HISTORY_KEY = 'AgriGuideAiChatHistory_v2_no_auth';
+        const MAX_HISTORY_TURNS = 10;
+        const AI_NAME = "AgriGuide";
+        const currentUserName = "Learner";
+
+        const AgriGuide_AI_INFO_FOR_AI = `
+            You are AgriGuide AI, a highly knowledgeable, helpful, and concise virtual assistant specializing in agriculture, local crops, soil health, and farming best practices. You can also refer to yourself as \${AI_NAME}. You are speaking to a farmer or agricultural enthusiast. Address them warmly and professionally (e.g., "Hello Farmer! What can I help you grow today?" or "That's an important topic for crop yield."). Your primary goal is to help users optimize their farming decisions by providing specific, actionable, and data-backed information relevant to crops, soil, and climate.
+            Core Topics You Can Discuss:
+            1. **Crop Selection & Conditions:**
+                * **Major Crops:** Provide basic information on staple crops (e.g., Wheat, Rice, Corn/Maize, Potatoes, Soybeans) and major cash crops (e.g., Cotton, Sugarcane, Coffee, Tea).
+                * **Ideal Climate:** Suggest the typical temperature ranges, light requirements, and moisture needs for specific crops (e.g., Rice needs standing water and hot temperatures; Wheat prefers cool, moist conditions).
+                * **Rotation Benefits:** Explain the advantages of crop rotation (soil nutrient replenishment, pest/disease break, improved structure).
+            2. **Soil and Regional Data (Generalized):**
+                * **Soil Types:** Describe major soil classifications (Loam, Clay, Sand, Silt) and what crops thrive in each (e.g., Carrots need sandy soil; Rice needs heavy clay).
+                * **pH Requirements:** Offer general ideal pH ranges for requested crops (e.g., Potatoes prefer slightly acidic, 5.0–6.0). **Crucially, remind the user to perform local soil tests.**
+                * **Regional Suitability:** If a city or region is mentioned, provide general advice on the typical regional climate and common farming challenges (e.g., "If you are in a monsoon region, focus on water drainage and flood-tolerant varieties").
+            3. **Farming Practices & Suggestions:**
+                * **Fertilization (N-P-K):** Recommend balanced N-P-K (Nitrogen, Phosphorus, Potassium) ratios or specific nutrient needs for different growth stages (e.g., high Nitrogen for leafy growth; high Potassium before fruiting).
+                * **Water Management:** Suggest optimal irrigation techniques (drip, furrow, sprinkler) and signs of over/under-watering for common crops.
+                * **Pest and Disease Control:** Discuss common pests (aphids, cutworms, blight) and suggest general preventive measures (integrated pest management, beneficial insects, cleanliness). **Avoid recommending specific brand-name chemical pesticides or giving exact dosage instructions.**
+                * **Harvesting:** Provide signs of ripeness and proper harvesting techniques to maximize yield quality.
+            General Guidelines for \${AI_NAME}:
+            - Be positive, empathetic, and professional. Your goal is to empower the user to make informed decisions.
+            - Break down complex agricultural terms or steps into easily readable **bullet points or numbered lists**.
+            - Use markdown-like bold syntax for emphasis: **Crucial Step**.
+            - If a user asks for real-time data, market prices, specific local weather forecasts, or complex chemical dosage, politely decline. State that you provide **educational and generalized recommendations** and that they should consult local agricultural extension offices or perform soil/water tests for precise data.
+            - If asked about something completely unrelated to agriculture or farming, gently steer the conversation back. Example: "That's an interesting topic! My focus is on helping you with your farming and crop questions. Do you have any agricultural queries I can assist with today?"
+            - Do not invent information. Your knowledge is based on your training data.
+            - You are **\${AI_NAME}**. Remember your name and agricultural purpose.
+        `;
+
+        const loadingOverlay = document.getElementById('loading-overlay');
+        const chatOutput = document.getElementById('chat-output');
+        const chatInput = document.getElementById('chat-input');
+        const sendBtn = document.getElementById('send-btn');
+        const clearLogBtn = document.getElementById('clear-log-btn');
+        const aiStatusDot = document.getElementById('ai-status-dot');
+        const aiStatusText = document.getElementById('ai-status-text');
+
+        // Footer year ID is currentYear in this file
+        document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+        let isAiProcessing = false;
+        let chatHistory = [];
+
+        function updateAiStatusIndicator(status, message = "") {
+            aiStatusText.textContent = message || (status.charAt(0).toUpperCase() + status.slice(1));
+            aiStatusDot.className = 'status-dot ';
+            switch(status) {
+                case 'ready':
+                    aiStatusDot.classList.add('green');
+                    break;
+                case 'processing':
+                    aiStatusDot.classList.add('yellow');
+                    break;
+                case 'error':
+                case 'config_error':
+                    aiStatusDot.classList.add('red');
+                    break;
+                case 'warning':
+                    aiStatusDot.classList.add('yellow');
+                    break;
+                default:
+                    aiStatusDot.classList.add('yellow');
+                    aiStatusText.textContent = "AI Standby";
+                    break;
+            }
+        }
+
+        function formatTimestamp(isoString) {
+            if (!isoString) return 'N/A';
+            const date = new Date(isoString);
+            return `${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+        }
+
+        function renderMessageToUI(messageContent, senderType, isoTimestamp, senderNameOverride = null) {
+            const timeString = formatTimestamp(isoTimestamp);
+            const entry = document.createElement('div');
+            entry.classList.add('log-entry');
+            let senderName = senderType === 'user' ? currentUserName : AI_NAME;
+            if (senderNameOverride) senderName = senderNameOverride;
+
+            let messageClass = '';
+            switch(senderType) {
+                case 'user':
+                    entry.classList.add('user-message');
+                    messageClass = 'user';
+                    break;
+                case 'ai':
+                    entry.classList.add('ai-message');
+                    messageClass = 'ai';
+                    break;
+                case 'error':
+                    entry.classList.add('error-message');
+                    messageClass = 'error';
+                    senderName = "System Alert";
+                    break;
+                case 'warning':
+                    entry.classList.add('warning-message');
+                    messageClass = 'system';
+                    senderName = "System Advisory";
+                    break;
+                default:
+                    entry.classList.add('system-message');
+                    messageClass = 'system';
+                    senderName = "System";
+                    break;
+            }
+
+            const contentDiv = document.createElement('div');
+            contentDiv.className = 'log-content';
+
+            if (senderType === 'ai') {
+                let processedContent = messageContent
+                    .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+                    .replace(/^- (.*$)/gm, '<ul><li>$1</li></ul>')
+                    .replace(/^\* (.*$)/gm, '<ul><li>$1</li></ul>')
+                    .replace(/^\d+\. (.*$)/gm, '<ol><li>$1</li></ol>');
+
+                processedContent = processedContent.replace(/<\/ul>\s*<ul>/g, '');
+                processedContent = processedContent.replace(/<\/ol>\s*<ol>/g, '');
+                contentDiv.innerHTML = processedContent;
+            } else {
+                contentDiv.textContent = messageContent;
+            }
+
+            entry.innerHTML = `
+                <div class="message-header">
+                    <span class="log-sender ${messageClass}">${senderName}</span>
+                    <span class="log-time">${timeString}</span>
+                </div>`;
+            entry.appendChild(contentDiv);
+            chatOutput.appendChild(entry);
+
+            const isScrolledNearBottom = chatOutput.scrollHeight - chatOutput.clientHeight <= chatOutput.scrollTop + (entry.clientHeight * 2.5);
+            if(isScrolledNearBottom || senderType==='ai' || senderType==='user') {
+                chatOutput.scrollTop = chatOutput.scrollHeight;
+            }
+        }
+
+        function logAndSaveMessage(messageContent, senderType, senderNameOverride = null) {
+            const timestamp = new Date().toISOString();
+            renderMessageToUI(messageContent, senderType, timestamp, senderNameOverride);
+
+            const historyRole = senderType === 'ai' ? 'model' : (senderType === 'user' ? 'user' : 'internal');
+            if (historyRole === 'user' || historyRole === 'model') {
+                chatHistory.push({
+                    role: historyRole,
+                    parts: [{ text: messageContent }],
+                    _timestamp: timestamp,
+                    _senderTypeForRender: senderType
+                });
+            } else {
+                chatHistory.push({
+                    role: 'internal',
+                    parts: [{ text: messageContent }],
+                    _timestamp: timestamp,
+                    _senderTypeForRender: senderType
+                });
+            }
+
+            try {
+                localStorage.setItem(CHAT_HISTORY_KEY, JSON.stringify(chatHistory));
+            } catch (e) {
+                console.error("Error saving chat history:", e);
+                renderMessageToUI("Could not save message to local history. Storage might be full.", "error", new Date().toISOString());
+            }
+        }
+
+        function loadChatHistory() {
+            try {
+                const storedHistory = localStorage.getItem(CHAT_HISTORY_KEY);
+                if (storedHistory) {
+                    const parsedHistory = JSON.parse(storedHistory);
+                    chatHistory = parsedHistory;
+                    chatOutput.innerHTML = '';
+                    parsedHistory.forEach(msg => {
+                        const textContent = msg.parts && msg.parts[0] && typeof msg.parts[0].text === 'string' ? msg.parts[0].text : "";
+                        let senderTypeForRender = msg._senderTypeForRender;
+                        if (!senderTypeForRender) {
+                            if (msg.role === 'model') senderTypeForRender = 'ai';
+                            else if (msg.role === 'user') senderTypeForRender = 'user';
+                            else senderTypeForRender = 'system';
+                        }
+                        renderMessageToUI(textContent, senderTypeForRender, msg._timestamp || new Date().toISOString());
+                    });
+                }
+            } catch (e) {
+                console.error("Error loading chat history:", e);
+                logAndSaveMessage("Failed to load previous chat history. It might be corrupted.", "error");
+                chatHistory = [];
+                localStorage.removeItem(CHAT_HISTORY_KEY);
+            }
+        }
+
+        clearLogBtn.addEventListener('click', () => {
+            chatOutput.innerHTML = '';
+            chatHistory = [];
+            localStorage.removeItem(CHAT_HISTORY_KEY);
+            logAndSaveMessage(`Hello ${currentUserName}! I'm ${AI_NAME}. I can help you with questions about agriculture, and agriculture career paths. How can I assist you today?`, "ai");
+            updateAiStatusIndicator('ready', 'AI Ready');
+        });
+
+        async function askGemini(userMessageText) {
+            if (isAiProcessing) {
+                logAndSaveMessage("Please wait, I'm still processing your previous request.", "warning");
+                return;
+            }
+
+            // Forward request to server-side proxy at /api/gemini
+
+            isAiProcessing = true;
+            updateAiStatusIndicator('processing', "AI Processing...");
+
+            let thinkingMessageElement = null;
+            const thinkingTimestamp = new Date().toISOString();
+            renderMessageToUI("...", "ai", thinkingTimestamp, `${AI_NAME} is thinking`);
+            if (chatOutput.lastChild && chatOutput.lastChild.textContent.includes(`${AI_NAME} is thinking`)) {
+                thinkingMessageElement = chatOutput.lastChild;
+            }
+
+            const conversationContext = chatHistory
+                .filter(msg => (msg.role === 'user' || msg.role === 'model') && msg.parts && msg.parts[0] && typeof msg.parts[0].text === 'string')
+                .slice(-MAX_HISTORY_TURNS)
+                .map(msg => ({ role: msg.role, parts: msg.parts }));
+
+            const systemPromptText = AgriGuide_AI_INFO_FOR_AI;
+
+            const requestBody = {
+                systemInstruction: {
+                    parts: [{ text: systemPromptText }]
+                },
+                contents: conversationContext,
+                generationConfig: {
+                    temperature: 0.6,
+                    maxOutputTokens: 1500
+                },
+                safetySettings: [
+                    { category: 'HARM_CATEGORY_HARASSMENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+                    { category: 'HARM_CATEGORY_HATE_SPEECH', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+                    { category: 'HARM_CATEGORY_SEXUALLY_EXPLICIT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+                    { category: 'HARM_CATEGORY_DANGEROUS_CONTENT', threshold: 'BLOCK_MEDIUM_AND_ABOVE' },
+                ]
+            };
+
+            try {
+                const response = await fetch('/api/gemini', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(requestBody)
+                });
+
+                if(thinkingMessageElement) thinkingMessageElement.remove();
+
+                if (!response.ok) {
+                    let errorDetail = `API Error (${response.status}): ${response.statusText}`;
+                    try {
+                        const errorBody = await response.json();
+                        errorDetail = `API Error (${response.status}): ${errorBody.error?.message || response.statusText}`;
+                    } catch (e) {
+                        /* Failed to parse JSON error */
+                    }
+                    throw new Error(errorDetail);
+                }
+
+                const data = await response.json();
+                let aiResponseText = "I'm sorry, I encountered an issue processing your request. Could you please rephrase or try again later?";
+                let responseType = "ai";
+
+                if (data.candidates && data.candidates[0]?.content?.parts?.[0]?.text) {
+                    aiResponseText = data.candidates[0].content.parts[0].text.trim();
+                    if (data.candidates[0].finishReason && data.candidates[0].finishReason !== 'STOP' && data.candidates[0].finishReason !== 'MAX_TOKENS') {
+                        logAndSaveMessage(`My response generation was potentially altered: ${data.candidates[0].finishReason}.`, "warning");
+                    }
+                } else if (data.promptFeedback?.blockReason) {
+                    aiResponseText = `Your request could not be processed: ${data.promptFeedback.blockReason}. Please try rephrasing.`;
+                    responseType = "warning";
+                } else if (data.candidates && data.candidates[0] && data.candidates[0].finishReason === 'SAFETY') {
+                    aiResponseText = "My response was blocked due to safety guidelines. Please try a different query.";
+                    responseType = "warning";
+                }
+
+                logAndSaveMessage(aiResponseText, responseType);
+                updateAiStatusIndicator('ready', "AI Ready");
+
+            } catch (error) {
+                if(thinkingMessageElement && thinkingMessageElement.parentNode) thinkingMessageElement.remove();
+                console.error("Error communicating with Gemini:", error);
+                logAndSaveMessage(`Error: ${error.message}. Please try again. If the issue persists, the AI service might be temporarily unavailable.`, "error");
+                updateAiStatusIndicator('error', "AI Error");
+            } finally {
+                isAiProcessing = false;
+            }
+        }
+
+        function handleSendMessage(messageText = null) {
+            const text = (messageText || chatInput.value.trim());
+            if (!text) return;
+            logAndSaveMessage(text, "user");
+            chatInput.value = '';
+            askGemini(text);
+        }
+
+        sendBtn.addEventListener('click', () => handleSendMessage());
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                handleSendMessage();
+            }
+        });
+
+        // Simplified Initialization - runs once the DOM is ready
+        function initializeAppAssistant() {
+            loadingOverlay.style.display = 'flex'; // Show loading
+            loadChatHistory();
+
+            if (!chatHistory.some(m => m._senderTypeForRender === 'ai' && m.role === 'model')) {
+                logAndSaveMessage(`Hello ${currentUserName}! I'm ${AI_NAME}. I can help you with questions about agriculture, and agriculture career paths. How can I assist you today?`, "ai");
+            }
+
+            updateAiStatusIndicator('ready', "AI Ready");
+
+            // Hide loading overlay after a short delay to ensure content is rendered
+            setTimeout(() => {
+                loadingOverlay.classList.add('hidden');
+                setTimeout(() => {
+                    // Remove from DOM after transition
+                    if (loadingOverlay.parentNode) loadingOverlay.parentNode.removeChild(loadingOverlay);
+                }, 300);
+            }, 300);
+        }
+
+        // Run initialization when the script loads
+        initializeAppAssistant();
+        console.log("AgriGuide AI Assistant (Text-Only) script loaded.");
+    </script>
+</body>
+
+</html>
