@@ -32,6 +32,7 @@ export default function Weather(){
   return (
     <section id="weather" className="py-5">
       <div className="container">
+        <h1>Weather Page</h1>
         <h2 className="mb-4">Weather</h2>
         <div className="mb-3 d-flex gap-2">
           <input className="form-control" value={city} onChange={e=>setCity(e.target.value)} />

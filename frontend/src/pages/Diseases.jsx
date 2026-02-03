@@ -44,6 +44,7 @@ export default function Diseases(){
   return (
     <section id="diseases" className="py-5">
       <div className="container">
+        <h1>Diseases Page</h1>
         <h2 className="mb-4">Plant Disease Diagnosis</h2>
         <div className="mb-3">
           <input type="file" accept="image/*" onChange={handleFile} />

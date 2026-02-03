@@ -28,6 +28,7 @@ export default function AI(){
   return (
     <section id="ai" className="py-5">
       <div className="container">
+        <h1>AI Page</h1>
         <h2 className="mb-4">AI Assistant</h2>
         <div className="chat-wrap d-flex flex-column flex-lg-row gap-3">
           <aside className="chat-sidebar col-lg-4 p-3 bg-light rounded">
