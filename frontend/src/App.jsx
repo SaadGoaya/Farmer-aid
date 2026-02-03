@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import api from './services/api'
-import { Routes, Route, Link, useLocation } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'
 import Home from './pages/Home'
 import Weather from './pages/Weather'
 import Diseases from './pages/Diseases'
@@ -33,6 +33,14 @@ function NavBar() {
 // AI chat moved to `src/pages/AI.jsx`
 
 export default function App() {
+  return (
+    <BrowserRouter>
+      <AppContent />
+    </BrowserRouter>
+  )
+}
+
+function AppContent() {
   const location = useLocation()
   return (
     <>
