@@ -5,7 +5,7 @@ import Home from './pages/Home'
 import Weather from './pages/Weather'
 import Diseases from './pages/Diseases'
 import About from './pages/About'
-import AIChat from './pages/AI'
+import AIChat from './pages/AIChat'
 
 function NavBar() {
   return (
@@ -33,7 +33,7 @@ function NavBar() {
 // AI chat moved to `src/pages/AI.jsx`
 
 export default function App() {
-  console.log('App loaded')
+  console.log('App loaded v2')
   return (
     <BrowserRouter>
       <NavBar />

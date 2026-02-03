@@ -1,7 +1,7 @@
 import React, { useState } from 'react'
 import api from '../services/api'
 
-export default function AIChat(){
+const AIChat = () => {
   const [messages, setMessages] = useState([])
   const [input, setInput] = useState('')
   const [loading, setLoading] = useState(false)
@@ -61,3 +61,5 @@ export default function AIChat(){
     </section>
   )
 }
+
+export default AIChat
