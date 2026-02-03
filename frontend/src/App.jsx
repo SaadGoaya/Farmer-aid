@@ -33,6 +33,7 @@ function NavBar() {
 // AI chat moved to `src/pages/AI.jsx`
 
 export default function App() {
+  console.log('App loaded')
   return (
     <BrowserRouter>
       <NavBar />
