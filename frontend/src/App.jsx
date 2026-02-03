@@ -44,7 +44,7 @@ export default function App(){
           <Route path="/" element={<Home />} />
           <Route path="/weather" element={<Weather />} />
           <Route path="/diseases" element={<Diseases />} />
-          <Route path="/ai" element={<AIChat />} />
+          <Route path="/ai" element={<AI />} />
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
