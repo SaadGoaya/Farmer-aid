@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 import api from './services/api'
-import { HashRouter, Routes, Route, Link } from 'react-router-dom'
+import { BrowserRouter, Routes, Route, Link } from 'react-router-dom'
 import Home from './pages/Home'
 import Weather from './pages/Weather'
 import Diseases from './pages/Diseases'
@@ -34,7 +34,7 @@ function NavBar() {
 
 export default function App() {
   return (
-    <HashRouter>
+    <BrowserRouter>
       <NavBar />
       <main style={{paddingTop: '72px'}}>
         <Routes>
@@ -45,6 +45,6 @@ export default function App() {
           <Route path="/about" element={<About />} />
         </Routes>
       </main>
-    </HashRouter>
+    </BrowserRouter>
   )
 }
